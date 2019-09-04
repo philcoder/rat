@@ -32,7 +32,7 @@ public class RegisterController {
 		try {
 			registerService.register(machine);
 			String message = "Machine " + machine.getName() + " <" + machine.getIp() + ":" + machine.getPort()
-					+ "> registered with successful added.";
+					+ "> registered with successful.";
 			logger.info(message);
 			return new ResponseEntity<ResponseMessage>(new ResponseMessage(message), HttpStatus.OK);
 		} catch (Exception e) {
