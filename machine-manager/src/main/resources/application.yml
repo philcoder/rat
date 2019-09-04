@@ -1,0 +1,22 @@
+logging:
+  level:
+    root: INFO
+    
+server:
+  port: 15000
+  servlet:
+    context-path: /${spring.application.name}
+    
+spring:
+  application:
+    name: manager
+  jpa:
+    database: mysql
+    hibernate:
+      ddl-auto: create
+      use-new-id-generator-mappings: false
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/machine-manager-db?useSSL=false&useTimezone=true&serverTimezone=America/Fortaleza
+    username: root
+    password: senha.123.ph
