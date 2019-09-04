@@ -20,6 +20,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @Table(name = "machine", indexes = { @Index(columnList = "name, ip, port", name = "machine_find_idx") })
 public class Machine {
+	@JsonIgnore
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;

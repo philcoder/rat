@@ -44,3 +44,18 @@ Parâmetros afetados são:
 Removendo a origem do EventLog MachineWatcherService.
 Serviço MachineWatcherService está sendo removido do sistema...
 Serviço MachineWatcherService foi removido com êxito do sistema.
+Instalando o assembly 'C:\work\ia\rat\Installer\MachineWatcher.exe'.
+Parâmetros afetados são:
+   i = 
+   logfile = C:\work\ia\rat\Installer\MachineWatcher.InstallLog
+   assemblypath = C:\work\ia\rat\Installer\MachineWatcher.exe
+   logtoconsole = 
+Instalando o serviço MachineWatcherService...
+Serviço MachineWatcherService foi instalado com êxito.
+Criando a origem de EventLog MachineWatcherService no log Application...
+Confirmando o assembly 'C:\work\ia\rat\Installer\MachineWatcher.exe'.
+Parâmetros afetados são:
+   i = 
+   logfile = C:\work\ia\rat\Installer\MachineWatcher.InstallLog
+   assemblypath = C:\work\ia\rat\Installer\MachineWatcher.exe
+   logtoconsole = 

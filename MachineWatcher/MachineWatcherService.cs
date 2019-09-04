@@ -1,8 +1,7 @@
 ﻿using MachineWatcher.Model;
-using System.Diagnostics;
+using MachineWatcher.Net;
 using System.Runtime.InteropServices;
 using System.ServiceProcess;
-using System.Timers;
 
 namespace MachineWatcher
 {
@@ -12,7 +11,7 @@ namespace MachineWatcher
 		//cuidado com tamanho dessa string que o sistema para de funcionar se for maior que isso!!!!! WTF!!!!
 		private static readonly string LOG_NAME = "MachineWatcherLog"; 
 
-		private int eventId = 1;
+		private RestClient restClient;
 
 		public MachineWatcherService()
 		{
@@ -26,8 +25,15 @@ namespace MachineWatcher
 			}
 			eventLog.Source = EVENT_LOG_SOURCE;
 			eventLog.Log = LOG_NAME;
+
+			restClient = new RestClient(eventLog);
 		}
 
+		//plataform windows call method
+		[DllImport("advapi32.dll", SetLastError = true)]
+		private static extern bool SetServiceStatus(System.IntPtr handle, ref ServiceStatus serviceStatus);
+
+		//WARN: Never block this method
 		protected override void OnStart(string[] args)
 		{
 			eventLog.WriteEntry("In OnStart.");
@@ -37,14 +43,15 @@ namespace MachineWatcher
 			SetServiceStatus(this.ServiceHandle, ref serviceStatus);
 			eventLog.WriteEntry("Service start pending.");
 
+			/*
 			Timer timer = new Timer();
 			timer.Interval = 10 * 1000; // 10s
 			timer.Elapsed += new ElapsedEventHandler(this.OnTimer);
 			timer.Start();
+			*/
 
-			//TODO: made others processes
-
-
+			//start threads or timers
+			restClient.Start();
 			serviceStatus.dwCurrentState = ServiceState.SERVICE_RUNNING;
 			SetServiceStatus(this.ServiceHandle, ref serviceStatus);
 			eventLog.WriteEntry("Service running.");
@@ -60,6 +67,7 @@ namespace MachineWatcher
 			eventLog.WriteEntry("Service stop pending.");
 
 			//TODO: made others processes
+			restClient.Interrupt();
 
 			serviceStatus.dwCurrentState = ServiceState.SERVICE_STOPPED;
 			SetServiceStatus(this.ServiceHandle, ref serviceStatus);
@@ -71,14 +79,12 @@ namespace MachineWatcher
 			eventLog.WriteEntry("In OnContinue.");
 		}
 
-		//plataform windows call method
-		[DllImport("advapi32.dll", SetLastError = true)]
-		private static extern bool SetServiceStatus(System.IntPtr handle, ref ServiceStatus serviceStatus);
-
+		/*
 		private void OnTimer(object sender, ElapsedEventArgs args)
 		{
 			// TODO: Insert monitoring activities here.
 			eventLog.WriteEntry("Monitoring the System", EventLogEntryType.Information, eventId++);
 		}
+		*/
 	}
 }

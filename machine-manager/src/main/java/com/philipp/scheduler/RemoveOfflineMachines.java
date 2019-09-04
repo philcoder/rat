@@ -22,7 +22,7 @@ public class RemoveOfflineMachines implements Job {
 	public void execute(JobExecutionContext context) throws JobExecutionException {
 		machineService.findOfflineMachines().forEach(machine -> {
 			machineService.deleteById(machine.getId());
-
+			
 			String message = "Offline Machine " + machine.getName() + " <" + machine.getIp() + ":" + machine.getPort()
 					+ "> was removed from database.";
 			logger.info(message);
