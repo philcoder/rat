@@ -26,8 +26,8 @@ public class Machine {
 	private int id;
 
 	@NotEmpty
-	@Size(max = 32, message = "Hostname must be a maximum of 32 characters")
-	@Column(nullable = false, length = 32)
+	@Size(max = 40, message = "Hostname must be a maximum of 40 characters")
+	@Column(nullable = false, length = 40)
 	private String name;
 
 	@Pattern(regexp = "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$")
@@ -42,13 +42,13 @@ public class Machine {
 	private int port;
 
 	@NotEmpty
-	@Size(max = 20, message = "Windows version must be a maximum of 20 characters")
-	@Column(nullable = false, length = 20)
+	@Size(max = 40, message = "Windows version must be a maximum of 40 characters")
+	@Column(nullable = false, length = 40)
 	private String windowsVersion;
 
 	@NotEmpty
-	@Size(max = 20, message = ".NET version must be a maximum of 20 characters")
-	@Column(nullable = false, length = 20)
+	@Size(max = 32, message = ".NET version must be a maximum of 20 characters")
+	@Column(nullable = false, length = 32)
 	private String dotNetVersion;
 
 	@NotEmpty

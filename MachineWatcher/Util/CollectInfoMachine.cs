@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Linq;
 using System.Net.Sockets;
+using System.Management;
 
 namespace MachineWatcher.Util
 {
@@ -31,11 +32,21 @@ namespace MachineWatcher.Util
 		{
 			this._machine.Name = Environment.MachineName;
 			this._machine.DotNetVersion = Environment.Version.ToString();
-			this._machine.WindowsVersion = Environment.OSVersion.VersionString;
+			this._machine.WindowsVersion = GetOSFriendlyName();
 			this._machine.Ip = GetIp();
 
 			//TODO: disk available and total
 			//TODO: get firewall active and anti-virus active
+		}
+
+		private string GetOSFriendlyName()
+		{
+			ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT Caption FROM Win32_OperatingSystem");
+			foreach (ManagementObject os in searcher.Get())
+			{
+				return os["Caption"].ToString();
+			}
+			return Environment.OSVersion.VersionString; //version with version and etc
 		}
 
 		private string GetIp()
