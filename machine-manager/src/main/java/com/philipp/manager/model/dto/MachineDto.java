@@ -1,5 +1,8 @@
 package com.philipp.manager.model.dto;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
@@ -20,13 +23,8 @@ public class MachineDto {
 	@Size(max = 32, message = ".NET version must be a maximum of 20 characters")
 	private String dotNetVersion;
 
-	@NotEmpty
-	@Size(max = 32, message = "Disk available must be a maximum of 32 characters")
-	private String diskAvailable;
-
-	@NotEmpty
-	@Size(max = 32, message = "Disk total must be a maximum of 32 characters")
-	private String diskTotal;
+	@Valid
+	private List<DriveDto> drives = new ArrayList<>(3);
 
 	private boolean antivirus;// true = installed
 
@@ -48,20 +46,12 @@ public class MachineDto {
 		this.dotNetVersion = dotNetVersion;
 	}
 
-	public String getDiskAvailable() {
-		return diskAvailable;
+	public List<DriveDto> getDrives() {
+		return drives;
 	}
 
-	public void setDiskAvailable(String diskAvailable) {
-		this.diskAvailable = diskAvailable;
-	}
-
-	public String getDiskTotal() {
-		return diskTotal;
-	}
-
-	public void setDiskTotal(String diskTotal) {
-		this.diskTotal = diskTotal;
+	public void setDrives(List<DriveDto> drives) {
+		this.drives = drives;
 	}
 
 	public boolean isAntivirus() {
@@ -91,8 +81,8 @@ public class MachineDto {
 	@Override
 	public String toString() {
 		return "MachineDto [networkInfoDto=" + networkInfoDto + ", windowsVersion=" + windowsVersion
-				+ ", dotNetVersion=" + dotNetVersion + ", diskAvailable=" + diskAvailable + ", diskTotal=" + diskTotal
-				+ ", antivirus=" + antivirus + ", firewall=" + firewall + "]";
+				+ ", dotNetVersion=" + dotNetVersion + ", drives=" + drives + ", antivirus=" + antivirus + ", firewall="
+				+ firewall + "]";
 	}
 
 }

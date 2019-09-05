@@ -54,6 +54,7 @@ public class RegisterService {
 
 	private Machine convertToEntity(MachineDto machineDto) {
 		Machine machine = modelMapper.map(machineDto, Machine.class);
+
 		machine.setHostname(machineDto.getNetworkInfoDto().getHostname());
 		machine.setIp(machineDto.getNetworkInfoDto().getIp());
 		machine.setPort(machineDto.getNetworkInfoDto().getPort());

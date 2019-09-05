@@ -1,13 +1,18 @@
 package com.philipp.manager.model;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -33,23 +38,22 @@ public class Machine {
 	@Column(nullable = false, length = 32)
 	private String dotNetVersion;
 
-	@Column(nullable = false, length = 32)
-	private String diskAvailable;
-
-	@Column(nullable = false, length = 32)
-	private String diskTotal;
-
 	@Column(nullable = false)
 	private boolean antivirus;// true = installed
 
 	@Column(nullable = false)
 	private boolean firewall;// true = actived
 
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "machine_id")
+	private List<Drive> drives;
+
 	@Column(nullable = false, columnDefinition = "TIMESTAMP")
 	private LocalDateTime lastSeen;
 
 	public Machine() {
 		this.lastSeen = LocalDateTime.now();
+		this.drives = new ArrayList<>(3);
 	}
 
 	public int getId() {
@@ -100,22 +104,6 @@ public class Machine {
 		this.dotNetVersion = dotNetVersion;
 	}
 
-	public String getDiskAvailable() {
-		return diskAvailable;
-	}
-
-	public void setDiskAvailable(String diskAvailable) {
-		this.diskAvailable = diskAvailable;
-	}
-
-	public String getDiskTotal() {
-		return diskTotal;
-	}
-
-	public void setDiskTotal(String diskTotal) {
-		this.diskTotal = diskTotal;
-	}
-
 	public boolean isAntivirus() {
 		return antivirus;
 	}
@@ -140,11 +128,18 @@ public class Machine {
 		this.lastSeen = lastSeen;
 	}
 
-	@Override
-	public String toString() {
-		return "Machine [id=" + id + ", hostname=" + hostname + ", ip=" + ip + ", windowsVersion=" + windowsVersion
-				+ ", dotNetVersion=" + dotNetVersion + ", diskAvailable=" + diskAvailable + ", diskTotal=" + diskTotal
-				+ ", antivirus=" + antivirus + ", firewall=" + firewall + ", lastSeen=" + lastSeen + "]";
+	public List<Drive> getDrives() {
+		return drives;
 	}
 
+	public void setDrives(List<Drive> drives) {
+		this.drives = drives;
+	}
+
+	@Override
+	public String toString() {
+		return "Machine [id=" + id + ", hostname=" + hostname + ", ip=" + ip + ", port=" + port + ", windowsVersion="
+				+ windowsVersion + ", dotNetVersion=" + dotNetVersion + ", antivirus=" + antivirus + ", firewall="
+				+ firewall + ", drives=" + drives + ", lastSeen=" + lastSeen + "]";
+	}
 }

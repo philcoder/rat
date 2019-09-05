@@ -36,9 +36,9 @@ namespace MachineWatcher.Net
 		{
 			try
 			{
-				Machine machine = collectInfo.GetMachineData();
 				while (running)
 				{
+					Machine machine = collectInfo.GetMachineData();
 					eventLog.WriteEntry("Monitoring the System from Thread", EventLogEntryType.Information, eventId++);
 					eventLog.WriteEntry("Machine Data: " + this.serializer.Serialize(machine), EventLogEntryType.Information, eventId++);
 					eventLog.WriteEntry("Network Info: " + this.serializer.Serialize(collectInfo.GetNetInfo()), EventLogEntryType.Information, eventId++);

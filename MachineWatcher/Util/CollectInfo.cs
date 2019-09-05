@@ -3,6 +3,9 @@ using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Management;
+using System.Diagnostics;
+using System.Collections.Generic;
+using System.IO;
 
 namespace MachineWatcher.Util
 {
@@ -25,9 +28,9 @@ namespace MachineWatcher.Util
 			machine.WindowsVersion = GetOSFriendlyName();
 			machine.Ip = GetIp();
 			machine.Port = listenPort;
-
-			//TODO: disk available and total
-			//TODO: get firewall active and anti-virus active
+			machine.Firewall = GetFirewallStatus();
+			machine.Antivirus = GetAntivirusInstalled();
+			machine.Drives = GetDrivesInstalled();
 
 			return machine;
 		}
@@ -68,11 +71,68 @@ namespace MachineWatcher.Util
 					localIp = endPoint.Address;
 				}
 			}
-			catch (SocketException ex)
+			catch (SocketException e)
 			{
+				throw e;
 			}
 
 			return localIp.ToString();
+		}
+
+		private bool GetFirewallStatus()
+		{
+			//use cmd for collect this data
+			ProcessStartInfo processStartInfo = new ProcessStartInfo("cmd.exe");
+			processStartInfo.RedirectStandardInput = true;
+			processStartInfo.RedirectStandardOutput = true;
+			processStartInfo.UseShellExecute = false;
+
+			Process process = Process.Start(processStartInfo);
+
+			if (process != null)
+			{
+				process.StandardInput.WriteLine("netsh advfirewall show allprofiles state");
+				process.StandardInput.Close();
+				string outputString = process.StandardOutput.ReadToEnd();//build output to string
+				return outputString.Contains("Ligado") || outputString.Contains("ON");
+			}
+			return false;
+		}
+
+		private bool GetAntivirusInstalled()
+		{
+			try
+			{
+				string wmipathstr = @"\\" + Environment.MachineName + @"\root\SecurityCenter2";
+				ManagementObjectSearcher searcher = new ManagementObjectSearcher(wmipathstr, "SELECT * FROM AntivirusProduct");
+				ManagementObjectCollection instances = searcher.Get();
+				return instances.Count > 0;
+			}
+			catch (Exception e)
+			{
+				throw e;
+			}
+		}
+
+		private List<Drive> GetDrivesInstalled()
+		{
+			List<Drive> drives = new List<Drive>(3);
+			DriveInfo[] allDrives = DriveInfo.GetDrives();
+			foreach (DriveInfo driveInfo in allDrives)
+			{
+				Drive drive = new Drive();
+				drive.Name = driveInfo.Name;
+
+				if (driveInfo.IsReady == true)
+				{
+					drive.AvailableSpace = driveInfo.TotalFreeSpace;
+					drive.TotalSpace = driveInfo.TotalSize;
+				}
+
+				drives.Add(drive);
+			}
+
+			return drives;
 		}
 	}
 }
