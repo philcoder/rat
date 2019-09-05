@@ -1,5 +1,6 @@
 ﻿using MachineWatcher.Model;
 using MachineWatcher.Net;
+using MachineWatcher.Net.Api;
 using MachineWatcher.Util;
 using System;
 using System.Diagnostics;
@@ -12,10 +13,10 @@ namespace MachineWatcher
 	public partial class MachineWatcherService : ServiceBase
 	{
 		private static readonly string EVENT_LOG_SOURCE = "EventLogSource";
-		//cuidado com tamanho dessa string que o sistema para de funcionar se for maior que isso!!!!! WTF!!!!
 		private static readonly string LOG_NAME = "MachineWatcherLog"; 
 
 		private RestClient restClient;
+		private SelfHostApi selfHostApi;
 		private string url;
 		private int listenPort;
 
@@ -26,6 +27,7 @@ namespace MachineWatcher
 			LoadPropertiesFile();
 
 			restClient = new RestClient(eventLog, url, listenPort);
+			selfHostApi = new SelfHostApi(eventLog,listenPort);
 		}
 
 		//plataform windows call method
@@ -42,15 +44,10 @@ namespace MachineWatcher
 			SetServiceStatus(this.ServiceHandle, ref serviceStatus);
 			eventLog.WriteEntry("Service start pending.");
 
-			/*
-			Timer timer = new Timer();
-			timer.Interval = 10 * 1000; // 10s
-			timer.Elapsed += new ElapsedEventHandler(this.OnTimer);
-			timer.Start();
-			*/
-
-			//start threads or timers
+			//start threads
 			restClient.Start();
+			selfHostApi.Start();
+
 			serviceStatus.dwCurrentState = ServiceState.SERVICE_RUNNING;
 			SetServiceStatus(this.ServiceHandle, ref serviceStatus);
 			eventLog.WriteEntry("Service running.");
@@ -65,8 +62,9 @@ namespace MachineWatcher
 			SetServiceStatus(this.ServiceHandle, ref serviceStatus);
 			eventLog.WriteEntry("Service stop pending.");
 
-			//TODO: made others processes
 			restClient.Interrupt();
+			selfHostApi.UnblockAsyncEvent();
+			selfHostApi.Interrupt();
 
 			serviceStatus.dwCurrentState = ServiceState.SERVICE_STOPPED;
 			SetServiceStatus(this.ServiceHandle, ref serviceStatus);
@@ -77,14 +75,6 @@ namespace MachineWatcher
 		{
 			eventLog.WriteEntry("In OnContinue.");
 		}
-
-		/*
-		private void OnTimer(object sender, ElapsedEventArgs args)
-		{
-			// TODO: Insert monitoring activities here.
-			eventLog.WriteEntry("Monitoring the System", EventLogEntryType.Information, eventId++);
-		}
-		*/
 
 		private void SetEventLog()
 		{
@@ -102,17 +92,17 @@ namespace MachineWatcher
 		{
 			try
 			{
-				this.eventLog.WriteEntry("Loading Properties File config.ini", EventLogEntryType.Information);
+				eventLog.WriteEntry("Loading Properties File config.ini", EventLogEntryType.Information);
 
 				Properties properties = new Properties();
 				properties.Load(Environment.ExpandEnvironmentVariables("%ProgramW6432%") + "\\MachineWatcher\\" + "config.ini");
 				if (properties.Data.ContainsKey("manager.address") && properties.Data.ContainsKey("manager.port") && properties.Data.ContainsKey("machine.watcher.listen.port"))
 				{
-					this.url = "http://" + properties.Data["manager.address"] + ":" + properties.Data["manager.port"] + "/manager/v1/client/win";
-					this.eventLog.WriteEntry("Web Server URL: " + this.url, EventLogEntryType.Information);
+					url = "http://" + properties.Data["manager.address"] + ":" + properties.Data["manager.port"] + "/manager/v1/client/win";
+					eventLog.WriteEntry("Web Server URL: " + this.url, EventLogEntryType.Information);
 
-					this.listenPort = Int32.Parse(properties.Data["machine.watcher.listen.port"]);
-					this.eventLog.WriteEntry("MachineWatcher listen on port: " + this.listenPort, EventLogEntryType.Information);
+					listenPort = Int32.Parse(properties.Data["machine.watcher.listen.port"]);
+					eventLog.WriteEntry("MachineWatcher listen on port: " + this.listenPort, EventLogEntryType.Information);
 				}
 				else
 				{
@@ -121,9 +111,9 @@ namespace MachineWatcher
 			}
 			catch(IOException e)
 			{
-				this.eventLog.WriteEntry(e.Message, EventLogEntryType.Error);
-				this.eventLog.WriteEntry(e.StackTrace, EventLogEntryType.Error);
-				this.eventLog.WriteEntry(e.Source, EventLogEntryType.Error);
+				eventLog.WriteEntry(e.Message, EventLogEntryType.Error);
+				eventLog.WriteEntry(e.StackTrace, EventLogEntryType.Error);
+				eventLog.WriteEntry(e.Source, EventLogEntryType.Error);
 
 				throw e;
 			}

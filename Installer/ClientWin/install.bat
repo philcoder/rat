@@ -26,6 +26,13 @@ goto check_Permissions
     
 :copy_files
 	COPY "%~dp0MachineWatcher.exe" "%ProgramFiles%\MachineWatcher\MachineWatcher.exe"
+	
+	COPY "%~dp0Newtonsoft.Json.dll" "%ProgramFiles%\MachineWatcher\Newtonsoft.Json.dll"
+	COPY "%~dp0System.Net.Http.Formatting.dll" "%ProgramFiles%\MachineWatcher\System.Net.Http.Formatting.dll"
+	COPY "%~dp0System.Web.Http.dll" "%ProgramFiles%\MachineWatcher\System.Web.Http.dll"
+	COPY "%~dp0System.Web.Http.SelfHost.dll" "%ProgramFiles%\MachineWatcher\System.Web.Http.SelfHost.dll"
+
+
 	COPY "%~dp0config.ini" "%ProgramFiles%\MachineWatcher\config.ini"
 	goto install_process
 	

@@ -19,7 +19,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"hostname\": \"PHIL\",\n\t\"ip\": \"192.168.0.16\",\n\t\"port\" : 666,\n\t\"windowsVersion\": \"Windows 10\",\n\t\"dotNetVersion\": \"4.0.30319.42000\",\n\t\"diskAvailable\": \"15114977333\",\n\t\"diskTotal\": \"25958948666\",\n\t\"antivirus\":\"true\",\n\t\"firewall\":\"true\"\n}"
+					"raw": "{\n\t\"hostname\": \"PHIL\",\n\t\"ip\": \"192.168.0.16\",\n\t\"port\" : 666,\n\t\"windowsVersion\": \"Windows 10\",\n\t\"dotNetVersion\": \"4.0.30319.42000\",\n\t\"antivirus\":\"true\",\n\t\"firewall\":\"true\",\n\t\"drives\":[\n\t\t{\n\t\t\t\"name\" : \"C:\\\\\",\n\t\t\t\"availableSpace\" : 4770430976,\n\t\t\t\"totalSpace\" : 10731683840\n\t\t},\n\t\t{\n\t\t\t\"name\" : \"D:\\\\\",\n\t\t\t\"availableSpace\" : 15114977280,\n\t\t\t\"totalSpace\" : 25958948864\n\t\t}\n\t]\n}"
 				},
 				"url": {
 					"raw": "http://localhost:15000/manager/v1/client/win/register",
@@ -56,7 +56,7 @@
 					"raw": "{\n\t\"hostname\": \"PHIL\",\n\t\"ip\": \"192.168.0.16\",\n\t\"port\" : 666\n}"
 				},
 				"url": {
-					"raw": "http://localhost:15000/manager/v1/client/win/heartbeat/5",
+					"raw": "http://localhost:15000/manager/v1/client/win/heartbeat/1",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -68,7 +68,7 @@
 						"client",
 						"win",
 						"heartbeat",
-						"5"
+						"1"
 					]
 				}
 			},
