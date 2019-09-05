@@ -18,9 +18,12 @@ goto check_Permissions
 	set DOTNETFX2=%SystemRoot%\Microsoft.NET\Framework\v4.0.30319
 	set PATH=%PATH%;%DOTNETFX2%
 
-	echo Installing Service...
+	echo Uninstalling Service...
 	echo ---------------------------------------------------
 	net stop MachineWatcherService
-	InstallUtil /u "%~dp0MachineWatcher.exe"
+	InstallUtil /u "%ProgramFiles%\MachineWatcher\MachineWatcher.exe"
+	echo ---------------------------------------------------
+	echo Cleanup work directory.
+	del "%ProgramFiles%\MachineWatcher\*.*" /s /f/ q
 	echo ---------------------------------------------------
 	echo Done.

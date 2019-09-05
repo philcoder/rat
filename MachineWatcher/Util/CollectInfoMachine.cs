@@ -1,8 +1,6 @@
 ﻿using MachineWatcher.Model;
 using System;
-using System.Collections.Generic;
 using System.Net;
-using System.Linq;
 using System.Net.Sockets;
 using System.Management;
 
