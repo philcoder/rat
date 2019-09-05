@@ -7,34 +7,38 @@ using System.Management;
 namespace MachineWatcher.Util
 {
 	//extract data from running machine...
-	public class CollectInfoMachine
+	public class CollectInfo
 	{
-		private Machine _machine;
 
-		public Machine Data
+		private int listenPort;
+
+		public CollectInfo(int listenPort)
 		{
-			get
-			{
-				return _machine;
-			}
+			this.listenPort = listenPort;
 		}
 
-		public CollectInfoMachine()
+		public Machine GetMachineData()
 		{
-			this._machine = new Machine();
-
-			ExtractData();
-		}
-
-		private void ExtractData()
-		{
-			this._machine.Name = Environment.MachineName;
-			this._machine.DotNetVersion = Environment.Version.ToString();
-			this._machine.WindowsVersion = GetOSFriendlyName();
-			this._machine.Ip = GetIp();
+			var machine = new Machine();
+			machine.Hostname = Environment.MachineName;
+			machine.DotNetVersion = Environment.Version.ToString();
+			machine.WindowsVersion = GetOSFriendlyName();
+			machine.Ip = GetIp();
+			machine.Port = listenPort;
 
 			//TODO: disk available and total
 			//TODO: get firewall active and anti-virus active
+
+			return machine;
+		}
+
+		public NetworkInfo GetNetInfo()
+		{
+			var netInfo = new NetworkInfo();
+			netInfo.Hostname = Environment.MachineName;
+			netInfo.Ip = GetIp();
+			netInfo.Port = listenPort;
+			return netInfo;
 		}
 
 		private string GetOSFriendlyName()

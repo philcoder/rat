@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 
 import com.philipp.manager.exception.NotFoundMachineException;
 import com.philipp.manager.model.Machine;
-import com.philipp.manager.model.dto.HostInfoDto;
 import com.philipp.manager.model.dto.MachineDto;
+import com.philipp.manager.model.dto.NetworkInfoDto;
 
 @Service
 public class RegisterService {
@@ -23,8 +23,9 @@ public class RegisterService {
 
 	// save or update
 	public int register(MachineDto machineDto) {
-		Optional<Machine> optionalMachine = machineService.findByHostnameAndIpAndPort(machineDto.getHostname(),
-				machineDto.getIp(), machineDto.getPort());
+		Optional<Machine> optionalMachine = machineService.findByHostnameAndIpAndPort(
+				machineDto.getNetworkInfoDto().getHostname(), machineDto.getNetworkInfoDto().getIp(),
+				machineDto.getNetworkInfoDto().getPort());
 
 		Machine machine = convertToEntity(machineDto);
 		if (!optionalMachine.isEmpty()) {
@@ -34,7 +35,7 @@ public class RegisterService {
 		return saved.getId();
 	}
 
-	public void heartbeat(int id, HostInfoDto loginForm) throws NotFoundMachineException {
+	public void heartbeat(int id, NetworkInfoDto loginForm) throws NotFoundMachineException {
 		Optional<Machine> optionalMachine = machineService.findById(id);
 		if (optionalMachine.isEmpty()) {
 			throw new NotFoundMachineException("Invalid id, the host need to register again.");
@@ -52,6 +53,10 @@ public class RegisterService {
 	}
 
 	private Machine convertToEntity(MachineDto machineDto) {
-		return modelMapper.map(machineDto, Machine.class);
+		Machine machine = modelMapper.map(machineDto, Machine.class);
+		machine.setHostname(machineDto.getNetworkInfoDto().getHostname());
+		machine.setIp(machineDto.getNetworkInfoDto().getIp());
+		machine.setPort(machineDto.getNetworkInfoDto().getPort());
+		return machine;
 	}
 }

@@ -25,7 +25,7 @@ namespace MachineWatcher
 			SetEventLog();
 			LoadPropertiesFile();
 
-			restClient = new RestClient(eventLog, url);
+			restClient = new RestClient(eventLog, url, listenPort);
 		}
 
 		//plataform windows call method

@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.philipp.manager.exception.NotFoundMachineException;
-import com.philipp.manager.model.dto.HostInfoDto;
 import com.philipp.manager.model.dto.MachineDto;
 import com.philipp.manager.model.dto.MachineResponseDto;
+import com.philipp.manager.model.dto.NetworkInfoDto;
 import com.philipp.manager.model.dto.ResponseDto;
 import com.philipp.manager.service.RegisterService;
 
@@ -33,7 +33,8 @@ public class RegisterController {
 	public ResponseEntity<ResponseDto> register(@Valid @RequestBody MachineDto machineDto) {
 		try {
 			int id = registerService.register(machineDto);
-			String message = "Machine " + machineDto.getHostname() + " <" + machineDto.getIp() + ":" + machineDto.getPort()
+			String message = "Machine " + machineDto.getNetworkInfoDto().getHostname() + " <"
+					+ machineDto.getNetworkInfoDto().getIp() + ":" + machineDto.getNetworkInfoDto().getPort()
 					+ "> registered with successful.";
 			logger.info(message);
 			return new ResponseEntity<ResponseDto>(new MachineResponseDto(id, message), HttpStatus.OK);
@@ -51,7 +52,7 @@ public class RegisterController {
 	 * @return
 	 */
 	@PutMapping("/heartbeat/{id}")
-	public ResponseEntity<ResponseDto> heartbeat(@PathVariable int id, @Valid @RequestBody HostInfoDto hostInfoDto) {
+	public ResponseEntity<ResponseDto> heartbeat(@PathVariable int id, @Valid @RequestBody NetworkInfoDto hostInfoDto) {
 		try {
 			registerService.heartbeat(id, hostInfoDto);
 			return new ResponseEntity<ResponseDto>(new ResponseDto("ok"), HttpStatus.OK);

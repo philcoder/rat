@@ -6,20 +6,20 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-public class HostInfoDto {
+public class NetworkInfoDto {
 
 	@NotEmpty
 	@Size(max = 40, message = "Hostname must be a maximum of 40 characters")
-	protected String hostname;
+	private String hostname;
 
 	@Pattern(regexp = "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$")
 	@Size(min = 7, max = 15)
 	@NotEmpty
-	protected String ip;
+	private String ip;
 
 	@Min(1)
 	@Max(65535)
-	protected int port;
+	private int port;
 
 	public String getHostname() {
 		return hostname;
@@ -47,6 +47,6 @@ public class HostInfoDto {
 
 	@Override
 	public String toString() {
-		return "HostInfoDto [hostname=" + hostname + ", ip=" + ip + ", port=" + port + "]";
+		return "NetworkInfoDto [hostname=" + hostname + ", ip=" + ip + ", port=" + port + "]";
 	}
 }

@@ -1,9 +1,16 @@
 package com.philipp.manager.model.dto;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
-public class MachineDto extends HostInfoDto {
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
+
+public class MachineDto {
+
+	@Valid
+	@JsonUnwrapped
+	private NetworkInfoDto networkInfoDto;
 
 	@NotEmpty
 	@Size(max = 40, message = "Windows version must be a maximum of 40 characters")
@@ -73,10 +80,19 @@ public class MachineDto extends HostInfoDto {
 		this.firewall = firewall;
 	}
 
+	public NetworkInfoDto getNetworkInfoDto() {
+		return networkInfoDto;
+	}
+
+	public void setNetworkInfoDto(NetworkInfoDto networkInfoDto) {
+		this.networkInfoDto = networkInfoDto;
+	}
+
 	@Override
 	public String toString() {
-		return "MachineDto [windowsVersion=" + windowsVersion + ", dotNetVersion=" + dotNetVersion + ", diskAvailable="
-				+ diskAvailable + ", diskTotal=" + diskTotal + ", antivirus=" + antivirus + ", firewall=" + firewall
-				+ ", hostname=" + hostname + ", ip=" + ip + ", port=" + port + "]";
+		return "MachineDto [networkInfoDto=" + networkInfoDto + ", windowsVersion=" + windowsVersion
+				+ ", dotNetVersion=" + dotNetVersion + ", diskAvailable=" + diskAvailable + ", diskTotal=" + diskTotal
+				+ ", antivirus=" + antivirus + ", firewall=" + firewall + "]";
 	}
+
 }
