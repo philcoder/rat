@@ -1,5 +1,9 @@
 ﻿using MachineWatcher.Model;
 using MachineWatcher.Net;
+using MachineWatcher.Util;
+using System;
+using System.Diagnostics;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.ServiceProcess;
 
@@ -12,21 +16,16 @@ namespace MachineWatcher
 		private static readonly string LOG_NAME = "MachineWatcherLog"; 
 
 		private RestClient restClient;
+		private string url;
+		private int listenPort;
 
 		public MachineWatcherService()
 		{
 			InitializeComponent();
+			SetEventLog();
+			LoadPropertiesFile();
 
-			eventLog = new System.Diagnostics.EventLog();
-			if (!System.Diagnostics.EventLog.SourceExists(EVENT_LOG_SOURCE))
-			{
-				System.Diagnostics.EventLog.CreateEventSource(
-					EVENT_LOG_SOURCE, LOG_NAME);
-			}
-			eventLog.Source = EVENT_LOG_SOURCE;
-			eventLog.Log = LOG_NAME;
-
-			restClient = new RestClient(eventLog);
+			restClient = new RestClient(eventLog, url);
 		}
 
 		//plataform windows call method
@@ -86,5 +85,48 @@ namespace MachineWatcher
 			eventLog.WriteEntry("Monitoring the System", EventLogEntryType.Information, eventId++);
 		}
 		*/
+
+		private void SetEventLog()
+		{
+			eventLog = new EventLog();
+			if (!EventLog.SourceExists(EVENT_LOG_SOURCE))
+			{
+				EventLog.CreateEventSource(
+					EVENT_LOG_SOURCE, LOG_NAME);
+			}
+			eventLog.Source = EVENT_LOG_SOURCE;
+			eventLog.Log = LOG_NAME;
+		}
+
+		private void LoadPropertiesFile()
+		{
+			try
+			{
+				this.eventLog.WriteEntry("Loading Properties File config.ini", EventLogEntryType.Information);
+
+				Properties properties = new Properties();
+				properties.Load(Environment.ExpandEnvironmentVariables("%ProgramW6432%") + "\\MachineWatcher\\" + "config.ini");
+				if (properties.Data.ContainsKey("manager.address") && properties.Data.ContainsKey("manager.port") && properties.Data.ContainsKey("machine.watcher.listen.port"))
+				{
+					this.url = "http://" + properties.Data["manager.address"] + ":" + properties.Data["manager.port"] + "/manager/v1/client/win";
+					this.eventLog.WriteEntry("Web Server URL: " + this.url, EventLogEntryType.Information);
+
+					this.listenPort = Int32.Parse(properties.Data["machine.watcher.listen.port"]);
+					this.eventLog.WriteEntry("MachineWatcher listen on port: " + this.listenPort, EventLogEntryType.Information);
+				}
+				else
+				{
+					throw new FileLoadException("File 'config.ini' corrupted check entries 'manager.address', 'manager.port' and 'machine.watcher.listen.port'");
+				}
+			}
+			catch(IOException e)
+			{
+				this.eventLog.WriteEntry(e.Message, EventLogEntryType.Error);
+				this.eventLog.WriteEntry(e.StackTrace, EventLogEntryType.Error);
+				this.eventLog.WriteEntry(e.Source, EventLogEntryType.Error);
+
+				throw e;
+			}
+		}
 	}
 }
