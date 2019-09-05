@@ -71,6 +71,8 @@
     <Compile Include="Model\Drive.cs" />
     <Compile Include="Model\Machine.cs" />
     <Compile Include="Model\NetworkInfo.cs" />
+    <Compile Include="Model\Message\MachineMessage.cs" />
+    <Compile Include="Model\Message\ResponseMessage.cs" />
     <Compile Include="Model\ServiceStatus.cs" />
     <Compile Include="Net\State.cs" />
     <Compile Include="Net\JsonSerializer.cs" />
