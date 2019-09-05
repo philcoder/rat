@@ -1,13 +1,13 @@
-package com.philipp.util;
+package com.philipp.manager.model.dto;
 
-public class ResponseMessage {
+public class ResponseDto {
 	private String message;
 
-	public ResponseMessage() {
-		this(null);
+	public ResponseDto() {
+		this("");
 	}
 
-	public ResponseMessage(String message) {
+	public ResponseDto(String message) {
 		this.message = message;
 	}
 

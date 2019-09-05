@@ -1,4 +1,4 @@
-package com.philipp.util;
+package com.philipp.manager.util;
 
 import org.quartz.spi.TriggerFiredBundle;
 import org.springframework.beans.BeansException;

@@ -1,4 +1,4 @@
-package com.philipp.controller;
+package com.philipp.manager.controller;
 
 import javax.validation.Valid;
 
@@ -14,10 +14,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.philipp.exception.NotFoundMachineException;
-import com.philipp.model.Machine;
-import com.philipp.service.RegisterService;
-import com.philipp.util.ResponseMessage;
+import com.philipp.manager.exception.NotFoundMachineException;
+import com.philipp.manager.model.dto.HostInfoDto;
+import com.philipp.manager.model.dto.MachineDto;
+import com.philipp.manager.model.dto.MachineResponseDto;
+import com.philipp.manager.model.dto.ResponseDto;
+import com.philipp.manager.service.RegisterService;
 
 @RestController
 @RequestMapping("/v1/client/win")
@@ -28,17 +30,17 @@ public class RegisterController {
 	private RegisterService registerService;
 
 	@PostMapping("/register")
-	public ResponseEntity<ResponseMessage> register(@Valid @RequestBody Machine machine) {
+	public ResponseEntity<ResponseDto> register(@Valid @RequestBody MachineDto machineDto) {
 		try {
-			registerService.register(machine);
-			String message = "Machine " + machine.getName() + " <" + machine.getIp() + ":" + machine.getPort()
+			int id = registerService.register(machineDto);
+			String message = "Machine " + machineDto.getHostname() + " <" + machineDto.getIp() + ":" + machineDto.getPort()
 					+ "> registered with successful.";
 			logger.info(message);
-			return new ResponseEntity<ResponseMessage>(new ResponseMessage(message), HttpStatus.OK);
+			return new ResponseEntity<ResponseDto>(new MachineResponseDto(id, message), HttpStatus.OK);
 		} catch (Exception e) {
 			String message = "Invalid data for register machine.";
 			logger.warn(message, e);
-			return new ResponseEntity<ResponseMessage>(new ResponseMessage(message), HttpStatus.NOT_ACCEPTABLE);
+			return new ResponseEntity<ResponseDto>(new ResponseDto(message), HttpStatus.NOT_ACCEPTABLE);
 		}
 	}
 
@@ -48,15 +50,14 @@ public class RegisterController {
 	 * 
 	 * @return
 	 */
-	@PutMapping("/heartbeat/{name}/{ip}/{port}")
-	public ResponseEntity<ResponseMessage> heartbeat(@PathVariable String name, @PathVariable String ip,
-			@PathVariable int port) {
+	@PutMapping("/heartbeat/{id}")
+	public ResponseEntity<ResponseDto> heartbeat(@PathVariable int id, @Valid @RequestBody HostInfoDto hostInfoDto) {
 		try {
-			registerService.heartbeat(name, ip, port);
-			return new ResponseEntity<ResponseMessage>(new ResponseMessage("ok"), HttpStatus.OK);
+			registerService.heartbeat(id, hostInfoDto);
+			return new ResponseEntity<ResponseDto>(new ResponseDto("ok"), HttpStatus.OK);
 		} catch (NotFoundMachineException e) {
 			logger.warn(e.getMessage());
-			return new ResponseEntity<ResponseMessage>(new ResponseMessage(e.getMessage()), HttpStatus.NOT_ACCEPTABLE);
+			return new ResponseEntity<ResponseDto>(new ResponseDto(e.getMessage()), HttpStatus.NOT_ACCEPTABLE);
 		}
 	}
 }

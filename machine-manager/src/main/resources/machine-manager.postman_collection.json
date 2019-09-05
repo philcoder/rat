@@ -1,0 +1,78 @@
+{
+	"info": {
+		"_postman_id": "8d4cd867-0680-49c7-8bed-7de57a52f272",
+		"name": "machine-manager",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "register",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"hostname\": \"PHIL\",\n\t\"ip\": \"192.168.0.16\",\n\t\"port\" : 666,\n\t\"windowsVersion\": \"Windows 10\",\n\t\"dotNetVersion\": \"4.0.30319.42000\",\n\t\"diskAvailable\": \"15114977333\",\n\t\"diskTotal\": \"25958948666\",\n\t\"antivirus\":\"true\",\n\t\"firewall\":\"true\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:15000/manager/v1/client/win/register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "15000",
+					"path": [
+						"manager",
+						"v1",
+						"client",
+						"win",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "heartbeat",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"hostname\": \"PHIL\",\n\t\"ip\": \"192.168.0.16\",\n\t\"port\" : 666\n}"
+				},
+				"url": {
+					"raw": "http://localhost:15000/manager/v1/client/win/heartbeat/5",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "15000",
+					"path": [
+						"manager",
+						"v1",
+						"client",
+						"win",
+						"heartbeat",
+						"5"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

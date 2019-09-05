@@ -1,4 +1,4 @@
-package com.philipp.exception;
+package com.philipp.manager.exception;
 
 public class NotFoundMachineException extends Exception {
 	private static final long serialVersionUID = 2770462144389894479L;

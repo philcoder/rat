@@ -1,4 +1,4 @@
-package com.philipp.scheduler;
+package com.philipp.manager.scheduler;
 
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.philipp.service.MachineService;
+import com.philipp.manager.service.MachineService;
 
 @Component
 public class RemoveOfflineMachines implements Job {
@@ -22,9 +22,9 @@ public class RemoveOfflineMachines implements Job {
 	public void execute(JobExecutionContext context) throws JobExecutionException {
 		machineService.findOfflineMachines().forEach(machine -> {
 			machineService.deleteById(machine.getId());
-			
-			String message = "Offline Machine " + machine.getName() + " <" + machine.getIp() + ":" + machine.getPort()
-					+ "> was removed from database.";
+
+			String message = "Offline Machine " + machine.getHostname() + " <" + machine.getIp() + ":"
+					+ machine.getPort() + "> was removed from database.";
 			logger.info(message);
 		});
 	}

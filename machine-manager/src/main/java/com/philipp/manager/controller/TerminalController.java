@@ -1,4 +1,4 @@
-package com.philipp.controller;
+package com.philipp.manager.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 

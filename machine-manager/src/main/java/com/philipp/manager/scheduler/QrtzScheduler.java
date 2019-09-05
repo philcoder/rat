@@ -1,4 +1,4 @@
-package com.philipp.scheduler;
+package com.philipp.manager.scheduler;
 
 import org.quartz.Job;
 import org.quartz.JobDetail;
@@ -12,7 +12,7 @@ import org.springframework.scheduling.quartz.JobDetailFactoryBean;
 import org.springframework.scheduling.quartz.SimpleTriggerFactoryBean;
 import org.springframework.scheduling.quartz.SpringBeanJobFactory;
 
-import com.philipp.util.AutoWiringSpringBeanJobFactory;
+import com.philipp.manager.util.AutoWiringSpringBeanJobFactory;
 
 /**
  * Configuration do Quartz Scheduler
