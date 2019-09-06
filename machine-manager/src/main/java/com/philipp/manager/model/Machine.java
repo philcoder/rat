@@ -39,6 +39,9 @@ public class Machine {
 	private String dotNetVersion;
 
 	@Column(nullable = false)
+	private boolean online;
+
+	@Column(nullable = false)
 	private boolean antivirus;// true = installed
 
 	@Column(nullable = false)
@@ -48,12 +51,18 @@ public class Machine {
 	@JoinColumn(name = "machine_id")
 	private List<Drive> drives;
 
+	@OneToMany
+	@JoinColumn(name = "machine_id")
+	private List<LogHistory> logHistories;
+
 	@Column(nullable = false, columnDefinition = "TIMESTAMP")
 	private LocalDateTime lastSeen;
 
 	public Machine() {
+		this.online = true;
 		this.lastSeen = LocalDateTime.now();
 		this.drives = new ArrayList<>(3);
+		this.logHistories = new ArrayList<>();
 	}
 
 	public int getId() {
@@ -104,6 +113,14 @@ public class Machine {
 		this.dotNetVersion = dotNetVersion;
 	}
 
+	public boolean isOnline() {
+		return online;
+	}
+
+	public void setOnline(boolean online) {
+		this.online = online;
+	}
+
 	public boolean isAntivirus() {
 		return antivirus;
 	}
@@ -120,14 +137,6 @@ public class Machine {
 		this.firewall = firewall;
 	}
 
-	public LocalDateTime getLastSeen() {
-		return lastSeen;
-	}
-
-	public void setLastSeen(LocalDateTime lastSeen) {
-		this.lastSeen = lastSeen;
-	}
-
 	public List<Drive> getDrives() {
 		return drives;
 	}
@@ -136,10 +145,27 @@ public class Machine {
 		this.drives = drives;
 	}
 
+	public List<LogHistory> getLogHistories() {
+		return logHistories;
+	}
+
+	public void setLogHistories(List<LogHistory> logHistories) {
+		this.logHistories = logHistories;
+	}
+
+	public LocalDateTime getLastSeen() {
+		return lastSeen;
+	}
+
+	public void setLastSeen(LocalDateTime lastSeen) {
+		this.lastSeen = lastSeen;
+	}
+
 	@Override
 	public String toString() {
 		return "Machine [id=" + id + ", hostname=" + hostname + ", ip=" + ip + ", port=" + port + ", windowsVersion="
-				+ windowsVersion + ", dotNetVersion=" + dotNetVersion + ", antivirus=" + antivirus + ", firewall="
-				+ firewall + ", drives=" + drives + ", lastSeen=" + lastSeen + "]";
+				+ windowsVersion + ", dotNetVersion=" + dotNetVersion + ", online=" + online + ", antivirus="
+				+ antivirus + ", firewall=" + firewall + ", drives=" + drives + ", logHistories=" + logHistories
+				+ ", lastSeen=" + lastSeen + "]";
 	}
 }

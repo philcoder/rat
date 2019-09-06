@@ -49,6 +49,7 @@ public class RegisterService {
 
 		Machine machine = optionalMachine.get();
 		machine.setLastSeen(LocalDateTime.now());
+		machine.setOnline(true);
 		machineService.save(machine);
 	}
 

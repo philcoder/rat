@@ -10,6 +10,9 @@ server:
 spring:
   application:
     name: manager
+  thymeleaf:
+    suffix: .html
+    cache: false
   jpa:
     database: mysql
     hibernate:
