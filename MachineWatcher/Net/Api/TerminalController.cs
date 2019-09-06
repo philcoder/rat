@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MachineWatcher.Model.Message;
+using MachineWatcher.Model.Response;
+using MachineWatcher.Util;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
@@ -6,26 +8,29 @@ using System.Web.Http;
 
 namespace MachineWatcher.Net.Api
 {	
-	//ROTE: watcher/v1/{name_controller}/{id} this name_controller is 'terminal'
 	public class TerminalController : ApiController
 	{
-		// GET watcher/v1/terminal
-		public HttpResponseMessage Get()
+		private Terminal terminal;
+
+		public TerminalController()
 		{
-			var hello = new string[] { "hello", "world", "from", "windows", "service", DateTime.Now.ToString() };
-			return Request.CreateResponse(HttpStatusCode.OK, hello, Configuration.Formatters.JsonFormatter);
+			terminal = new Terminal();
 		}
-
+		
 		// POST watcher/v1/terminal
-		public HttpResponseMessage Post([FromBody] string payload)
+		[HttpPost]
+		public HttpResponseMessage ExecuteCommands(CommandMessage cmd)
 		{
-			List<string> response = new List<string>(3);
-			response.Add("try remove files");
-			response.Add("java -version = 8.0");
-			response.Add("test");
-			response.Add(payload);
+			if(cmd.Commands == null || cmd.Commands.Equals(""))
+			{
+				ResponseMessage response = new ResponseMessage();
+				response.Message = "The command passed was null or blank";
+				return Request.CreateResponse(HttpStatusCode.BadRequest, response, Configuration.Formatters.JsonFormatter);
+			}
 
-			return Request.CreateResponse(HttpStatusCode.OK, response, Configuration.Formatters.JsonFormatter);
+			CommandOutputMessage cmdOutput = new CommandOutputMessage();
+			cmdOutput.Outputs = terminal.Execute(cmd.Commands.Trim());
+			return Request.CreateResponse(HttpStatusCode.OK, cmdOutput, Configuration.Formatters.JsonFormatter);
 		}
 	}
 }

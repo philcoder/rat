@@ -12,12 +12,14 @@ namespace MachineWatcher.Util
 	//extract data from running machine...
 	public class CollectInfo
 	{
-
 		private int listenPort;
+
+		private Terminal terminal;
 
 		public CollectInfo(int listenPort)
 		{
 			this.listenPort = listenPort;
+			terminal = new Terminal();
 		}
 
 		public Machine GetMachineData()
@@ -81,22 +83,8 @@ namespace MachineWatcher.Util
 
 		private bool GetFirewallStatus()
 		{
-			//use cmd for collect this data
-			ProcessStartInfo processStartInfo = new ProcessStartInfo("cmd.exe");
-			processStartInfo.RedirectStandardInput = true;
-			processStartInfo.RedirectStandardOutput = true;
-			processStartInfo.UseShellExecute = false;
-
-			Process process = Process.Start(processStartInfo);
-
-			if (process != null)
-			{
-				process.StandardInput.WriteLine("netsh advfirewall show allprofiles state");
-				process.StandardInput.Close();
-				string outputString = process.StandardOutput.ReadToEnd();//build output to string
-				return outputString.Contains("Ligado") || outputString.Contains("ON");
-			}
-			return false;
+			string output = terminal.GetStringFromExecute("netsh advfirewall show allprofiles state");
+			return output.Contains("Ligado") || output.Contains("ON");
 		}
 
 		private bool GetAntivirusInstalled()

@@ -28,8 +28,10 @@ namespace MachineWatcher.Net.Api
 			{
 				eventLog.WriteEntry("Start SelfHostApi Thread", EventLogEntryType.Information);
 				var baseAddress = "http://" + ip + ":" + listenPort + "/";
-				//var baseAddress = "http://localhost:" + listenPort + "/";
 				var config = new HttpSelfHostConfiguration(baseAddress);
+
+				config.MapHttpAttributeRoutes();
+
 				config.Routes.MapHttpRoute(
 					name: "MachineWatcherApi",
 					routeTemplate: "watcher/v1/{controller}/{id}",
@@ -39,7 +41,7 @@ namespace MachineWatcher.Net.Api
 				using (HttpSelfHostServer server = new HttpSelfHostServer(config))
 				{
 					server.OpenAsync().Wait();
-					shutDown.WaitOne();//wait signal to block unblock async event
+					shutDown.WaitOne();//wait signal to unblock async event
 				}
 			}
 			catch (Exception e)

@@ -82,6 +82,8 @@
     </Compile>
     <Compile Include="Model\Drive.cs" />
     <Compile Include="Model\Machine.cs" />
+    <Compile Include="Model\Message\CommandMessage.cs" />
+    <Compile Include="Model\Message\CommandOutputMessage.cs" />
     <Compile Include="Model\NetworkInfo.cs" />
     <Compile Include="Model\Message\MachineMessage.cs" />
     <Compile Include="Model\Message\ResponseMessage.cs" />
@@ -102,6 +104,7 @@
     <Compile Include="Util\Properties.cs" />
     <Compile Include="Util\Runnable.cs" />
     <Compile Include="Net\RestClient.cs" />
+    <Compile Include="Util\Terminal.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
