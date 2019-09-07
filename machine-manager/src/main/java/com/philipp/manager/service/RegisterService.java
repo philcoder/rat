@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.philipp.manager.exception.NotFoundMachineException;
 import com.philipp.manager.model.Machine;
@@ -30,11 +31,13 @@ public class RegisterService {
 		Machine machine = convertToEntity(machineDto);
 		if (!optionalMachine.isEmpty()) {
 			machine.setId(optionalMachine.get().getId());
+			machine.setLogHistories(optionalMachine.get().getLogHistories());
 		}
-		Machine saved = machineService.save(machine);
+		Machine saved = machineService.save(machine); // for persist first time
 		return saved.getId();
 	}
 
+	@Transactional
 	public void heartbeat(int id, NetworkInfoDto loginForm) throws NotFoundMachineException {
 		Optional<Machine> optionalMachine = machineService.findById(id);
 		if (optionalMachine.isEmpty()) {
@@ -50,15 +53,32 @@ public class RegisterService {
 		Machine machine = optionalMachine.get();
 		machine.setLastSeen(LocalDateTime.now());
 		machine.setOnline(true);
-		machineService.save(machine);
+		// machineService.save(machine); //Redundant save() Call for update operations
 	}
 
 	private Machine convertToEntity(MachineDto machineDto) {
 		Machine machine = modelMapper.map(machineDto, Machine.class);
 
+		machine.setOnline(true);
 		machine.setHostname(machineDto.getNetworkInfoDto().getHostname());
 		machine.setIp(machineDto.getNetworkInfoDto().getIp());
 		machine.setPort(machineDto.getNetworkInfoDto().getPort());
+
+		// mock!!
+//		LogHistory logHistory = new LogHistory();
+//		logHistory.setMachine(machine);
+//		logHistory.setCommand("cd c://");
+//		logHistory.getOutputs().add("x");
+//		logHistory.getOutputs().add("t");
+//		logHistory.getOutputs().add("z");
+//		machine.getLogHistories().add(logHistory);
+//		logHistory = new LogHistory();
+//		logHistory.setMachine(machine);
+//		logHistory.setCommand("dir d://");
+//		logHistory.getOutputs().add("x " + LocalDateTime.now().toString());
+//		logHistory.getOutputs().add("z");
+//		machine.getLogHistories().add(logHistory);
+
 		return machine;
 	}
 }

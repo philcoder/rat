@@ -1,28 +1,70 @@
-$(document).ready(function(){ 
-    $.ajax({
+var onlineDevices = null;
+
+$(document).ready(function(){
+	loadDataOnTable()
+	
+	//auto refresh every 10s
+    setInterval(() => {
+    	loadDataOnTable();
+	}, 10000);
+});
+
+function loadDataOnTable(){
+	$.ajax({
         async: true,
-        url: '/webui/userRatings',
+        url: '/manager/web/api/show/online/machines',
         method: 'GET',
         success: function(serverData){
-            // console.log(serverData)
-            if(serverData.status === "ok"){
-                history_table = $("#history_table").DataTable({
-                    "searching": false,
-                    "ordering": true,
-                    "lengthChange": true,
-                    "iDisplayLength": 7,
-                    "aLengthMenu": [[7, 15, 30, 50, -1], [7, 15, 30, 50, "All"]],
-                    data: serverData.history_ratings,
-                    columns: [
-                        {data: "title", "orderable": true},
-                        {data: "rating", "orderable": true},
-                        {data: "suggests", "orderable": true}
-                    ]
-                });
-            }
+//        	console.log(serverData);
+        	
+        	if(onlineDevices != null){
+        		onlineDevices.destroy()
+        	}
+        	onlineDevices = $("#online_devices_table").DataTable({
+                "searching": false,
+                "ordering": true,
+                "lengthChange": true,
+                "iDisplayLength": 5,
+                "aLengthMenu": [[5, 10, 30, 50, -1], [5, 10, 30, 50, "All"]],
+                data: serverData,
+                columns: [
+                	{
+                		data: null, 
+                		"orderable": false,
+                		className: 'text-center',
+                        searchable: false,
+                        orderable: false,
+                        render: function (data, type, full, meta) {
+                            return '<input type="checkbox" id="check_' + data.id + '" class="check" name="check" value="' + data.id + '">';
+                        },
+                        width: "10px"
+                	},
+                	{data: "hostname", "orderable": true},
+                    {data: "ip", "orderable": true},
+                    {data: "port", "orderable": true},
+                    {data: "windowsVersion", "orderable": true},
+                    {data: "antivirus", "orderable": true},
+                    {data: "firewall", "orderable": true}
+                ],
+                order: [[1, 'asc']]
+            });
         }
     })
-});
+}
+
+
+function executeCommandsFromMachines(){
+	var selectIds = []
+	$("input:checked").each(function() {
+		selectIds.push($(this).val())
+	});
+	
+	if(selectIds.length > 0){
+		alert("IDS: "+selectIds)
+	}else{
+		alert('empty cb selection')
+	}
+}
 
 
 //function searchMovie(){

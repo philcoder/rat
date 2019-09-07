@@ -24,6 +24,6 @@ public interface MachineRepository extends CrudRepository<Machine, Integer> {
 	 * 
 	 * @return
 	 */
-	@Query(value = "SELECT * FROM machine where last_seen >= date_sub(now(), interval 30 second)", nativeQuery = true)
+	@Query(value = "SELECT * FROM machine where online = 1", nativeQuery = true)
 	List<Machine> findOnlineMachines();
 }

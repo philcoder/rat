@@ -20,12 +20,12 @@ public class RemoveOfflineMachines implements Job {
 
 	@Override
 	public void execute(JobExecutionContext context) throws JobExecutionException {
-		machineService.findOfflineMachines().forEach(machine -> {
-			machine.setOnline(false);
-			machineService.save(machine);
-			logger.info("Offline Machine " + machine.getHostname() + " <" + machine.getIp() + ":" + machine.getPort()
-					+ "> database was updated.");
-		});
+//		machineService.findOfflineMachines().forEach(machine -> {
+//			machine.setOnline(false);
+//			machineService.save(machine);
+//			logger.info("Offline Machine " + machine.getHostname() + " <" + machine.getIp() + ":" + machine.getPort()
+//					+ "> database was updated.");
+//		});
 	}
 
 }

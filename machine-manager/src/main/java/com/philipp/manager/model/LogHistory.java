@@ -8,10 +8,12 @@ import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -31,6 +33,10 @@ public class LogHistory {
 
 	@Column(nullable = false, columnDefinition = "TIMESTAMP")
 	private LocalDateTime dateTime;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "machine_id")
+	private Machine machine;
 
 	public LogHistory() {
 		this.outputs = new ArrayList<>();
@@ -67,6 +73,14 @@ public class LogHistory {
 
 	public void setDateTime(LocalDateTime dateTime) {
 		this.dateTime = dateTime;
+	}
+
+	public Machine getMachine() {
+		return machine;
+	}
+
+	public void setMachine(Machine machine) {
+		this.machine = machine;
 	}
 
 	@Override

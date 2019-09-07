@@ -15,7 +15,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.DynamicUpdate;
+
 @Entity
+@DynamicUpdate
 @Table(name = "machine", indexes = { @Index(columnList = "hostname, ip, port", name = "machine_find_idx") })
 public class Machine {
 
@@ -51,8 +54,7 @@ public class Machine {
 	@JoinColumn(name = "machine_id")
 	private List<Drive> drives;
 
-	@OneToMany
-	@JoinColumn(name = "machine_id")
+	@OneToMany(mappedBy = "machine", cascade = CascadeType.ALL)
 	private List<LogHistory> logHistories;
 
 	@Column(nullable = false, columnDefinition = "TIMESTAMP")
@@ -159,13 +161,5 @@ public class Machine {
 
 	public void setLastSeen(LocalDateTime lastSeen) {
 		this.lastSeen = lastSeen;
-	}
-
-	@Override
-	public String toString() {
-		return "Machine [id=" + id + ", hostname=" + hostname + ", ip=" + ip + ", port=" + port + ", windowsVersion="
-				+ windowsVersion + ", dotNetVersion=" + dotNetVersion + ", online=" + online + ", antivirus="
-				+ antivirus + ", firewall=" + firewall + ", drives=" + drives + ", logHistories=" + logHistories
-				+ ", lastSeen=" + lastSeen + "]";
 	}
 }

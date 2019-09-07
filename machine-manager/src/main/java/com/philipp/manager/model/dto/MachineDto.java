@@ -11,6 +11,8 @@ import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
 public class MachineDto {
 
+	private int id;
+
 	@Valid
 	@JsonUnwrapped
 	private NetworkInfoDto networkInfoDto;
@@ -29,6 +31,20 @@ public class MachineDto {
 	private boolean antivirus;// true = installed
 
 	private boolean firewall;// true = actived
+
+	private String status;
+
+	private String diskAvailable;
+
+	private String diskTotal;
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
 
 	public String getWindowsVersion() {
 		return windowsVersion;
@@ -70,6 +86,30 @@ public class MachineDto {
 		this.firewall = firewall;
 	}
 
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public String getDiskAvailable() {
+		return diskAvailable;
+	}
+
+	public void setDiskAvailable(String diskAvailable) {
+		this.diskAvailable = diskAvailable;
+	}
+
+	public String getDiskTotal() {
+		return diskTotal;
+	}
+
+	public void setDiskTotal(String diskTotal) {
+		this.diskTotal = diskTotal;
+	}
+
 	public NetworkInfoDto getNetworkInfoDto() {
 		return networkInfoDto;
 	}
@@ -77,12 +117,4 @@ public class MachineDto {
 	public void setNetworkInfoDto(NetworkInfoDto networkInfoDto) {
 		this.networkInfoDto = networkInfoDto;
 	}
-
-	@Override
-	public String toString() {
-		return "MachineDto [networkInfoDto=" + networkInfoDto + ", windowsVersion=" + windowsVersion
-				+ ", dotNetVersion=" + dotNetVersion + ", drives=" + drives + ", antivirus=" + antivirus + ", firewall="
-				+ firewall + "]";
-	}
-
 }

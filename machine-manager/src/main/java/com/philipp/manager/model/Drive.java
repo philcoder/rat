@@ -55,10 +55,4 @@ public class Drive {
 	public void setTotalSpace(long totalSpace) {
 		this.totalSpace = totalSpace;
 	}
-
-	@Override
-	public String toString() {
-		return "Disk [id=" + id + ", name=" + name + ", availableSpace=" + availableSpace + ", totalSpace=" + totalSpace
-				+ "]";
-	}
 }
