@@ -1,5 +1,7 @@
 package com.philipp.manager.service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +24,10 @@ abstract class AbstractService<ENTITY, REPO extends CrudRepository<ENTITY, Integ
 		return repository.existsById(id);
 	}
 
-	public Iterable<ENTITY> findAll() {
-		return repository.findAll();
+	public List<ENTITY> findAll() {
+		List<ENTITY> list = new ArrayList<>();
+		repository.findAll().forEach(e -> list.add(e));
+		return list;
 	}
 
 	public Iterable<ENTITY> findAllById(Iterable<Integer> ids) {
