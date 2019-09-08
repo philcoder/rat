@@ -1,26 +1,25 @@
 package com.philipp.manager.model.dto;
 
-public class LogHistoryDto {
-	private int id;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
-	private String command;
+public class LogHistoryDto extends ExecuteCommandDto {
+	@JsonInclude(Include.NON_NULL)
+	private Integer id;
 
+	@JsonInclude(Include.NON_NULL)
 	private String dateTime;
 
-	public int getId() {
+	public LogHistoryDto() {
+		super();
+	}
+
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
-	}
-
-	public String getCommand() {
-		return command;
-	}
-
-	public void setCommand(String command) {
-		this.command = command;
 	}
 
 	public String getDateTime() {

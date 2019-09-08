@@ -167,4 +167,9 @@ public class Machine {
 	public void setLastSeen(LocalDateTime lastSeen) {
 		this.lastSeen = lastSeen;
 	}
+
+	@Override
+	public String toString() {
+		return "[" + hostname + "] " + ip + ":" + port;
+	}
 }

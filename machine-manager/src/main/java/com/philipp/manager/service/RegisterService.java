@@ -64,21 +64,6 @@ public class RegisterService {
 		machine.setIp(machineDto.getNetworkInfoDto().getIp());
 		machine.setPort(machineDto.getNetworkInfoDto().getPort());
 
-		// mock!!
-//		LogHistory logHistory = new LogHistory();
-//		logHistory.setMachine(machine);
-//		logHistory.setCommand("cd c://");
-//		logHistory.getOutputs().add("x");
-//		logHistory.getOutputs().add("t");
-//		logHistory.getOutputs().add("z");
-//		machine.getLogHistories().add(logHistory);
-//		logHistory = new LogHistory();
-//		logHistory.setMachine(machine);
-//		logHistory.setCommand("dir d://");
-//		logHistory.getOutputs().add("x " + LocalDateTime.now().toString());
-//		logHistory.getOutputs().add("z");
-//		machine.getLogHistories().add(logHistory);
-
 		return machine;
 	}
 }

@@ -22,7 +22,7 @@ public class MachineDto {
 	private String windowsVersion;
 
 	@NotEmpty
-	@Size(max = 32, message = ".NET version must be a maximum of 20 characters")
+	@Size(max = 32, message = ".NET version must be a maximum of 32 characters")
 	private String dotNetVersion;
 
 	@Valid

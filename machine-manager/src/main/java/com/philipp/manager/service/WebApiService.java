@@ -9,14 +9,15 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.philipp.manager.exception.ExecuteRemoteCommandException;
 import com.philipp.manager.model.Drive;
 import com.philipp.manager.model.LogHistory;
 import com.philipp.manager.model.Machine;
+import com.philipp.manager.model.dto.InputDto;
 import com.philipp.manager.model.dto.LogHistoryDto;
 import com.philipp.manager.model.dto.MachineDto;
 import com.philipp.manager.model.dto.MachineLogHistoryDto;
 import com.philipp.manager.model.dto.NetworkInfoDto;
-import com.philipp.manager.model.dto.OutputDto;
 
 @Service
 public class WebApiService {
@@ -27,39 +28,79 @@ public class WebApiService {
 	private MachineService machineService;
 
 	@Autowired
+	private RestClientService restClientService;
+
+	@Autowired
 	private ModelMapper modelMapper;
 
 	public List<MachineDto> showOnlineMachines() {
 		return convertMachineListToListDto(machineService.findOnlineMachines());
 	}
 
-	public List<MachineDto> showAllMachines() {
+	public List<MachineLogHistoryDto> executeCommands(InputDto inputDto) {
+		List<MachineLogHistoryDto> response = new ArrayList<>();
+
+		for (Integer id : inputDto.getMachineIdsList()) {
+			MachineLogHistoryDto machineLogHistory = new MachineLogHistoryDto();
+
+			LogHistory logHistory = null;
+			Optional<Machine> machine = machineService.findById(id);
+			if (machine.isPresent()) {
+				if (machine.get().isOnline()) {
+					try {
+						logHistory = restClientService.executeRemoteCommand(inputDto.getCommand(), machine.get());
+						logHistoryService.save(logHistory);
+						machineLogHistory.getLogs().add(modelMapper.map(logHistory, LogHistoryDto.class));
+					} catch (ExecuteRemoteCommandException e) {
+						machineLogHistory.setMessage(e.getMessage());
+					}
+				} else {
+					machineLogHistory.setMessage("Machine " + machine.get() + " is offline");
+				}
+			} else {
+				machineLogHistory.setMessage("Machine with invalid id");
+			}
+
+			if (logHistory == null) {
+				logHistory = new LogHistory();
+				logHistory.setCommands(inputDto.getCommand());
+				machineLogHistory.getLogs().add(modelMapper.map(logHistory, LogHistoryDto.class));
+			}
+
+			machineLogHistory.setNetInfo(convertMachineToNetworkInfoDto(machine.get()));
+			response.add(machineLogHistory);
+		}
+
+		return response;
+	}
+
+	public List<MachineDto> historyShowAllMachines() {
 		return convertMachineListToListDto(machineService.findAll());
 	}
 
-	public MachineLogHistoryDto showMachineLogs(int id) {
+	public MachineLogHistoryDto historyShowMachineLogs(int id) {
 		List<LogHistory> logs = logHistoryService.findAllByMachine(new Machine(id));
 		List<LogHistoryDto> logDtos = convertLogHistoryListToListDto(logs);
 
 		MachineLogHistoryDto machineLogHistory = new MachineLogHistoryDto();
-		if (logDtos.isEmpty()) {
+		if (!logDtos.isEmpty()) {
+			machineLogHistory.setLogs(logDtos);
+			machineLogHistory.setNetInfo(convertMachineToNetworkInfoDto(logs.get(0).getMachine()));
+		} else {
 			Optional<Machine> machine = machineService.findById(id);
 			if (!machine.isEmpty()) {
 				machineLogHistory.setNetInfo(convertMachineToNetworkInfoDto(machine.get()));
 			}
-		} else {
-			machineLogHistory.setLogs(logDtos);
-			machineLogHistory.setNetInfo(convertMachineToNetworkInfoDto(logs.get(0).getMachine()));
 		}
 
 		return machineLogHistory;
 	}
 
-	public OutputDto showMachineLogOutput(int id) {
-		OutputDto output = new OutputDto();
+	public LogHistoryDto historyShowMachineLogOutput(int id) {
+		LogHistoryDto output = new LogHistoryDto();
 		Optional<LogHistory> findLog = logHistoryService.findById(id);
-		if (!findLog.isEmpty()) {
-			output.setCommand(findLog.get().getCommand());
+		if (findLog.isPresent()) {
+			output.setCommands(findLog.get().getCommands());
 			output.setOutputs(findLog.get().getOutputs());
 		}
 
@@ -70,7 +111,9 @@ public class WebApiService {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
 		List<LogHistoryDto> list = new ArrayList<>();
 		logs.forEach(elem -> {
-			LogHistoryDto dto = modelMapper.map(elem, LogHistoryDto.class);
+			LogHistoryDto dto = new LogHistoryDto();
+			dto.setId(elem.getId());
+			dto.setCommands(elem.getCommands());
 			dto.setDateTime(elem.getDateTime().format(formatter));
 			list.add(dto);
 		});

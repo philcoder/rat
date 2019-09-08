@@ -1,5 +1,4 @@
 
-.content_movie{
-    background-color: #f8f8f8;
-    
+textarea {
+  resize: none;
 }

@@ -7,7 +7,7 @@ $(document).ready(function(){
 function loadDataOnTable(){
 	$.ajax({
         async: true,
-        url: '/manager/web/api/show/all/machines',
+        url: '/manager/web/api/history/show/all/machines',
         method: 'GET',
         success: function(serverData){        	
         	devicesTable = $("#devices_table").DataTable({
@@ -49,7 +49,7 @@ function loadDataOnTable(){
 function loadLogHistory(id){
 	$.ajax({
         async: true,
-        url: '/manager/web/api/show/machine/logs/'+id,
+        url: '/manager/web/api/history/show/machine/logs/'+id,
         method: 'GET',
         success: function(serverData){
         	hiddenOutputTextArea()
@@ -66,7 +66,7 @@ function loadLogHistory(id){
                 "aLengthMenu": [[5, 15, 30, 50, -1], [5, 15, 30, 50, "All"]],
                 data: serverData.logs,
                 columns: [
-                	{data: "command", "orderable": true, width: "800px"},
+                	{data: "commands", "orderable": true, width: "800px"},
                 	{data: "dateTime", "orderable": true, className: 'text-center', width: "150px"},
                     {
                 		data: null, 
@@ -95,7 +95,7 @@ function loadLogHistory(id){
 function loadLogOutput(id){
 	$.ajax({
         async: true,
-        url: '/manager/web/api/show/machine/log/output/'+id,
+        url: '/manager/web/api/history/show/machine/log/'+id+'/output',
         method: 'GET',
         success: function(serverData){       
         	$("#cmd").text(serverData.command);
@@ -103,7 +103,7 @@ function loadLogOutput(id){
         	
         	if(serverData.outputs.length > 0){
         		for (i = 0; i < serverData.outputs.length; i++) {
-        			$("#cmd_output").append(serverData.outputs[i])
+        			$("#cmd_output").append(serverData.outputs[i]+"\n")
         		}
         	}else{
         		$("#cmd_output").append('<EMPTY OUTPUT>')

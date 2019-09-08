@@ -24,11 +24,11 @@ public class LogHistory {
 	private int id;
 
 	@Column(nullable = false, length = 256)
-	private String command;
+	private String commands;
 
 	@ElementCollection
 	@CollectionTable(name = "log_history_output", joinColumns = @JoinColumn(name = "log_history_id"))
-	@Column(name = "output", length = 128)
+	@Column(name = "output", columnDefinition = "TEXT")
 	private List<String> outputs;
 
 	@Column(nullable = false, columnDefinition = "TIMESTAMP")
@@ -51,12 +51,12 @@ public class LogHistory {
 		this.id = id;
 	}
 
-	public String getCommand() {
-		return command;
+	public String getCommands() {
+		return commands;
 	}
 
-	public void setCommand(String command) {
-		this.command = command;
+	public void setCommands(String commands) {
+		this.commands = commands;
 	}
 
 	public List<String> getOutputs() {
@@ -85,7 +85,7 @@ public class LogHistory {
 
 	@Override
 	public String toString() {
-		return "LogHistory [id=" + id + ", command=" + command + ", outputs=" + outputs + ", dateTime=" + dateTime
+		return "LogHistory [id=" + id + ", commands=" + commands + ", outputs=" + outputs + ", dateTime=" + dateTime
 				+ "]";
 	}
 }

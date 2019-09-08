@@ -28,42 +28,62 @@
                 <a class="p-2 text-dark" href="/manager/web/loghistory">History</a>        
             </nav>
         </div>
-        
-        <div class="container justify-content-center align-items-center">
-	        <div id="history_content"class="container">
-	            <div class="row">
-	                <h4>Online Hosts</h4>
-	            </div>
-	
-	            <div class="row pt-2">
-	                <table class="table table-striped display m-0" id="online_devices_table">
-	                    <thead>
-	                        <tr style="font-size: 14px">
-	                        	<th width="10px"></th>
-	                            <th width="150px">Hostname</th>
-	                            <th width="100px">IP</th>
-	                            <th width="30px">Port</th>
-	                            <th width="150px">Windows</th>
-	                            <th width="30px">AV</th>
-	                            <th width="30px">FW</th>
-	                        </tr>
-	                    </thead>
-	                    <tbody>
-	                        <tr>
-	                        	<td></td>
-	                            <td>-</td>
-	                            <td>-</td>
-	                            <td>-</td>
-	                            <td>-</td>
-	                            <td>-</td>
-	                            <td>-</td>
-	                        </tr>
-	                    </tbody>
-	                </table>
-	            </div>
-	            
-	            <button type="button" class="btn btn-primary" id="btn_run" name="submitRunCmd" onclick="executeCommandsFromMachines()">Run</button>
-	            
+
+		<div class="container justify-content-center align-items-center">
+	        <div id="show_output_cmd_content" class="container pt-2" style="width: 800px">
+	        	<div class="form-group">
+	        		<div class="row">
+		                <h4>Online Hosts</h4>
+		            </div>
+		
+		            <div class="row pt-2">
+		                <table class="table table-striped display m-0" id="online_devices_table">
+		                    <thead>
+		                        <tr style="font-size: 14px">
+		                        	<th width="10px"></th>
+		                            <th width="150px">Hostname</th>
+		                            <th width="100px">IP</th>
+		                            <th width="30px">Port</th>
+		                            <th width="150px">Windows</th>
+		                            <th width="30px">AV</th>
+		                            <th width="30px">FW</th>
+		                        </tr>
+		                    </thead>
+		                    <tbody>
+		                        <tr>
+		                        	<td></td>
+		                            <td>-</td>
+		                            <td>-</td>
+		                            <td>-</td>
+		                            <td>-</td>
+		                            <td>-</td>
+		                            <td>-</td>
+		                        </tr>
+		                    </tbody>
+		                </table>
+		            </div>
+	        		
+		            <div class="row pt-5">
+		                <h4>Input Command(s)</h4>
+		            </div>
+		            <div class="row pt-2">
+		            	<textarea id="cmd_input" class="form-control" rows="3" wrap="soft" maxlength="250"></textarea>
+		            	<div id="cmd_input_error" class="invalid-feedback"></div>
+		            </div>
+					<div class="row pt-2">
+		            	<button type="button" class="btn btn-primary" id="btn_run" name="submitRunCmd" onclick="executeCommandsFromMachines()">Execute Commands</button>
+		            	<div id="message_error" class="pl-3 pt-1" style="color:red;"></div>
+	            	</div>
+		            
+		            <div class="row pt-5">
+		                <h4>Output(s) Command(s)</h4>
+		            </div>
+		            <div class="row pt-2">
+		            	<textarea id="cmd_output" class="form-control" rows="20" wrap="soft" readonly>
+							
+						</textarea>
+		            </div>
+            	</div>
         	</div>
     	</div>
     	
