@@ -120,7 +120,7 @@ function populateOutputSuccess(host){
 	$("#cmd_output").append("CMD: "+host.logs[0].commands+"\n")
 	$("#cmd_output").append("****************************************************************************************************\n")
 	for (i = 0; i < host.logs[0].outputs.length; i++) {
-		$("#cmd_output").append(host.logs[0].outputs[i]+"\n")
+		$("#cmd_output").append(htmlEncode(host.logs[0].outputs[i])+"\n")
 	}
 }
 
@@ -130,11 +130,15 @@ function populateOutputFailed(host){
 	$("#cmd_output").append("--------------------------------------------------------------------------------------------------------\n")
 	$("#cmd_output").append("CMD: "+host.logs[0].commands+"\n")
 	$("#cmd_output").append("--------------------------------------------------------------------------------------------------------\n")
-	$("#cmd_output").append("ERROR: "+host.message+"\n")
+	$("#cmd_output").append("ERROR: "+htmlEncode(host.message)+"\n")
 	$("#cmd_output").append("****************************************************************************************************\n")
 }
 
-
+function htmlEncode(string){
+	var el = document.createElement("div");
+	el.innerText = string;
+	return el.innerHTML;
+}
 
 
 

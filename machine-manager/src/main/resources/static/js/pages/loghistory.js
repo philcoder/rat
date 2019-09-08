@@ -98,12 +98,13 @@ function loadLogOutput(id){
         url: '/manager/web/api/history/show/machine/log/'+id+'/output',
         method: 'GET',
         success: function(serverData){       
-        	$("#cmd").text(serverData.command);
+        	$("#cmd").text(serverData.commands);
         	$("#cmd_output").empty();
         	
         	if(serverData.outputs.length > 0){
         		for (i = 0; i < serverData.outputs.length; i++) {
-        			$("#cmd_output").append(serverData.outputs[i]+"\n")
+        			console.log(serverData.outputs[i])
+        			$("#cmd_output").append(htmlEncode(serverData.outputs[i])+"\n")
         		}
         	}else{
         		$("#cmd_output").append('<EMPTY OUTPUT>')
@@ -117,4 +118,10 @@ function loadLogOutput(id){
 function hiddenOutputTextArea(){
 	$("#show_output_cmd_content").hide();
 	$("#cmd_output").empty();
+}
+
+function htmlEncode(string){
+	var el = document.createElement("div");
+	el.innerText = string;
+	return el.innerHTML;
 }

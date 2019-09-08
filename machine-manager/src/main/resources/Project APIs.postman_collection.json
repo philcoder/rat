@@ -1,0 +1,296 @@
+{
+	"info": {
+		"_postman_id": "8d4cd867-0680-49c7-8bed-7de57a52f272",
+		"name": "Project APIs",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "machine-manager",
+			"item": [
+				{
+					"name": "/v1/client/win/register",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"hostname\": \"PHIL\",\n\t\"ip\": \"192.168.0.16\",\n\t\"port\" : 666,\n\t\"windowsVersion\": \"Windows 10\",\n\t\"dotNetVersion\": \"4.0.30319.42000\",\n\t\"antivirus\":\"true\",\n\t\"firewall\":\"true\",\n\t\"drives\":[\n\t\t{\n\t\t\t\"name\" : \"C:\\\\\",\n\t\t\t\"availableSpace\" : 4770430976,\n\t\t\t\"totalSpace\" : 10731683840\n\t\t},\n\t\t{\n\t\t\t\"name\" : \"D:\\\\\",\n\t\t\t\"availableSpace\" : 15114977280,\n\t\t\t\"totalSpace\" : 25958948864\n\t\t}\n\t]\n}"
+						},
+						"url": {
+							"raw": "http://localhost:15000/manager/v1/client/win/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "15000",
+							"path": [
+								"manager",
+								"v1",
+								"client",
+								"win",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/v1/client/win/heartbeat/{id}",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"hostname\": \"PHIL\",\n\t\"ip\": \"192.168.0.16\",\n\t\"port\" : 666\n}"
+						},
+						"url": {
+							"raw": "http://localhost:15000/manager/v1/client/win/heartbeat/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "15000",
+							"path": [
+								"manager",
+								"v1",
+								"client",
+								"win",
+								"heartbeat",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/web/api/show/online/machines",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:15000/manager/web/api/show/online/machines",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "15000",
+							"path": [
+								"manager",
+								"web",
+								"api",
+								"show",
+								"online",
+								"machines"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/web/api/show/online/machines Copy",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"machine_id_list\" : [1,2,3],\n\t\"cmd_input\" : \"chcp && powershell Get-Process && netsh advfirewall show allprofiles state && cd C:\\\\ && DIR\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:15000/manager/web/api/execute/online/machines/commands",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "15000",
+							"path": [
+								"manager",
+								"web",
+								"api",
+								"execute",
+								"online",
+								"machines",
+								"commands"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/web/api/history/show/all/machines",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:15000/manager/web/api/history/show/all/machines",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "15000",
+							"path": [
+								"manager",
+								"web",
+								"api",
+								"history",
+								"show",
+								"all",
+								"machines"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/web/api/history/show/machine/logs/{id}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:15000/manager/web/api/history/show/machine/logs/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "15000",
+							"path": [
+								"manager",
+								"web",
+								"api",
+								"history",
+								"show",
+								"machine",
+								"logs",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/web/api/history/show/machine/log/{id}/output",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:15000/manager/web/api/history/show/machine/log/1/output",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "15000",
+							"path": [
+								"manager",
+								"web",
+								"api",
+								"history",
+								"show",
+								"machine",
+								"log",
+								"1",
+								"output"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "machine-watcher",
+			"item": [
+				{
+					"name": "terminal execute mixed cmds",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"commands\" : \"chcp && powershell Get-Process && netsh advfirewall show allprofiles state && cd C:\\\\ && DIR\"\n}"
+						},
+						"url": {
+							"raw": "http://192.168.42.13:20000/watcher/v1/terminal",
+							"protocol": "http",
+							"host": [
+								"192",
+								"168",
+								"42",
+								"13"
+							],
+							"port": "20000",
+							"path": [
+								"watcher",
+								"v1",
+								"terminal"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "terminal execute pwsh lang",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"commands\" : \"\n\t\tpowershell $colors = @('Red','Orange','Yellow','Green','Blue','Indigo','Violet'); For ($i=0; $i -lt $colors.Length; $i++) { $colors[$i] }\n\t\"\n}"
+						},
+						"url": {
+							"raw": "http://192.168.42.13:20000/watcher/v1/terminal",
+							"protocol": "http",
+							"host": [
+								"192",
+								"168",
+								"42",
+								"13"
+							],
+							"port": "20000",
+							"path": [
+								"watcher",
+								"v1",
+								"terminal"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
