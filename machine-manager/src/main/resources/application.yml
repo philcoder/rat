@@ -21,6 +21,6 @@ spring:
       use-new-id-generator-mappings: false
 
   datasource:
-    url: jdbc:mysql://localhost:3306/machine-manager-db?useSSL=false&useTimezone=true&serverTimezone=America/Fortaleza
+    url: jdbc:mysql://localhost:3306/machine-manager-db?useSSL=false&allowPublicKeyRetrieval=true&useTimezone=true&serverTimezone=America/Fortaleza
     username: root
     password: senha.123.ph
