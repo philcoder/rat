@@ -3,6 +3,19 @@ FROM ubuntu:bionic
 
 LABEL maintainer="Philipp B. Costa"
 
+#use br repositories for speedup network
+RUN echo 'deb http://br.archive.ubuntu.com/ubuntu/ bionic main restricted' > /etc/apt/sources.list
+RUN echo 'deb http://br.archive.ubuntu.com/ubuntu/ bionic-updates main restricted' >> /etc/apt/sources.list
+RUN echo 'deb http://br.archive.ubuntu.com/ubuntu/ bionic universe' >> /etc/apt/sources.list
+RUN echo 'deb http://br.archive.ubuntu.com/ubuntu/ bionic-updates universe' >> /etc/apt/sources.list
+
+RUN echo 'deb http://br.archive.ubuntu.com/ubuntu/ bionic multiverse' >> /etc/apt/sources.list
+RUN echo 'deb http://br.archive.ubuntu.com/ubuntu/ bionic-updates multiverse' >> /etc/apt/sources.list
+
+RUN echo 'deb http://br.archive.ubuntu.com/ubuntu/ bionic-security main restricted' >> /etc/apt/sources.list
+RUN echo 'deb http://br.archive.ubuntu.com/ubuntu/ bionic-security universe' >> /etc/apt/sources.list
+RUN echo 'deb http://br.archive.ubuntu.com/ubuntu/ bionic-security multiverse' >> /etc/apt/sources.list
+
 #support lib and app
 RUN apt-get update && apt-get install -y --no-install-recommends \
 		ca-certificates \
