@@ -1,0 +1,32 @@
+version: '3'
+services:
+  mysql-db:
+    container_name: mysql-db
+    image: mysql/mysql-server:8.0.13
+    environment:
+      MYSQL_DATABASE: machine-manager-db
+      MYSQL_ROOT_PASSWORD: senha.123.ph
+      MYSQL_ROOT_HOST: '%'
+      TZ: America/Fortaleza
+    ports:
+    - "3306:3306"
+    restart: always
+
+  app-web-api:
+    container_name: app-web-api
+    restart: always
+    build:
+        context: ./app-web-api
+        dockerfile: Dockerfile
+    image: philipp/app-web-api:1.0.0
+    tty: true
+    ports:
+    - "15000:15000"
+
+networks:
+  default:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet:  172.25.0.1/24
