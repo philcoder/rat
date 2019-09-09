@@ -10,29 +10,36 @@ namespace MachineWatcher.Util
 
 		public Terminal()
 		{
-			processStartInfo = new ProcessStartInfo("cmd.exe");
+			processStartInfo = new ProcessStartInfo("cmd");
 			processStartInfo.RedirectStandardInput = true;
 			processStartInfo.RedirectStandardOutput = true;
+			processStartInfo.RedirectStandardError = true;
 			processStartInfo.UseShellExecute = false;
 			processStartInfo.StandardOutputEncoding = Encoding.GetEncoding(850);
+			processStartInfo.StandardErrorEncoding = Encoding.GetEncoding(850);
 		}
 
 		public List<string> Execute(string cmd)
 		{
 			List<string> lines = new List<string>();
 
+			processStartInfo.Arguments = "/c " + cmd;
 			Process process = Process.Start(processStartInfo);
 			if (process != null)
 			{
-				process.StandardInput.WriteLine(cmd);
-				process.StandardInput.Close();
-
 				string line;
 				while ((line = process.StandardOutput.ReadLine()) != null)
 				{
 					lines.Add(ConvertStringEncode(line));
 				}
 				process.StandardOutput.Close();
+
+				while ((line = process.StandardError.ReadLine()) != null)
+				{
+					lines.Add(ConvertStringEncode(line));
+				}
+				process.StandardError.Close();
+
 				process.Close();
 			}
 

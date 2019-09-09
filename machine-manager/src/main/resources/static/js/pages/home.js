@@ -90,6 +90,8 @@ function sentCommands(selectMachineIds, cmdInput){
         cmd_input : cmdInput
     }
 
+    disableButtons();
+    
     $.ajax({
         async: true,
         url: '/manager/web/api/execute/online/machines/commands',
@@ -98,7 +100,6 @@ function sentCommands(selectMachineIds, cmdInput){
         dataType: 'json',
         data: JSON.stringify(data),
         success: function(serverData){
-        	$("#cmd_output").empty() //cleanup
         	for (i = 0; i < serverData.length; i++) {
         		if('message' in serverData[i] === true){
         			populateOutputFailed(serverData[i])
@@ -106,9 +107,12 @@ function sentCommands(selectMachineIds, cmdInput){
         			populateOutputSuccess(serverData[i])
         		}
         	}
+        	
+        	enableButtons()
         },
         error: function(serverData, status){
         	console.log(serverData)
+        	enableButtons()
         }
     })
 }
@@ -140,7 +144,16 @@ function htmlEncode(string){
 	return el.innerHTML;
 }
 
+function disableButtons(){
+    $("#btn_run").attr("disabled", true);
+    $("#btn_run").html(
+        `<span class="spinner-border spinner-border-sm"></span>   Execute Commands`
+    );
+    
+    $("#cmd_output").empty()
+}
 
-
-
-
+function enableButtons(){
+	$("#btn_run").attr("disabled", false);
+    $("#btn_run").html("Execute Commands");
+}
