@@ -100,13 +100,13 @@ function sentCommands(selectMachineIds, cmdInput){
         dataType: 'json',
         data: JSON.stringify(data),
         success: function(serverData){
-        	for (i = 0; i < serverData.length; i++) {
-        		if('message' in serverData[i] === true){
-        			populateOutputFailed(serverData[i])
+        	serverData.forEach(function(elem) {
+        		if('message' in elem === true){
+        			populateOutputFailed(elem)
         		}else{
-        			populateOutputSuccess(serverData[i])
+        			populateOutputSuccess(elem)
         		}
-        	}
+        	})
         	
         	enableButtons()
         },
