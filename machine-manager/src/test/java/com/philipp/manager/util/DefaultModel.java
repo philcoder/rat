@@ -59,6 +59,13 @@ public final class DefaultModel {
 		return machine;
 	}
 
+	public static LogHistory getLogHistory(Machine machine) {
+		LogHistory logHistory = modelMapper.map(getLogHistoryDto(), LogHistory.class);
+		logHistory.setId(0);
+		logHistory.setMachine(machine);
+		return logHistory;
+	}
+
 	public static LogHistory getLogHistory() {
 		return modelMapper.map(getLogHistoryDto(), LogHistory.class);
 	}

@@ -14,13 +14,13 @@ spring:
     suffix: .html
     cache: false
   jpa:
-    database: mysql
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
     show-sql: false
     hibernate:
       ddl-auto: update
       use-new-id-generator-mappings: false
 
   datasource:
-    url: jdbc:mysql://localhost:3306/machine-manager-db?useSSL=false&allowPublicKeyRetrieval=true&useTimezone=true&serverTimezone=America/Fortaleza
+    url: jdbc:mysql://localhost:3306/machine_manager_db?useSSL=false&allowPublicKeyRetrieval=true&useTimezone=true&serverTimezone=America/Fortaleza&createDatabaseIfNotExist=true
     username: root
     password: senha.123.ph
