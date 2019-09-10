@@ -21,12 +21,13 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.philipp.manager.exception.NotFoundMachineException;
-import com.philipp.manager.model.dto.DriveDto;
 import com.philipp.manager.model.dto.MachineDto;
 import com.philipp.manager.model.dto.NetworkInfoDto;
 import com.philipp.manager.service.RegisterService;
+import com.philipp.manager.util.DefaultModel;
 import com.philipp.manager.util.RandomSpringJUnit4ClassRunner;
 
+// https://reflectoring.io/spring-boot-web-controller-test/
 @RunWith(RandomSpringJUnit4ClassRunner.class)
 @WebMvcTest(RegisterController.class)
 public class RegisterControllerTest {
@@ -38,14 +39,14 @@ public class RegisterControllerTest {
 	private ObjectMapper mapper;
 
 	@MockBean
-	private RegisterService registerService;
+	private RegisterService registerServiceMock;
 
 	@Test
 	public void postRegisterWithSuccess() throws Exception {
 		// mock register service
-		when(registerService.register(ArgumentMatchers.any(MachineDto.class))).thenReturn(100);
+		when(registerServiceMock.register(ArgumentMatchers.any(MachineDto.class))).thenReturn(100);
 
-		MachineDto requestBody = getMachineDto();
+		MachineDto requestBody = DefaultModel.getMachineDto();
 		MockHttpServletRequestBuilder httpServletRequest = post("/v1/client/win/register")
 				.content(mapper.writeValueAsString(requestBody)).contentType(MediaType.APPLICATION_JSON);
 
@@ -58,9 +59,9 @@ public class RegisterControllerTest {
 
 	@Test
 	public void postRegisterWithInternalException() throws Exception {
-		when(registerService.register(ArgumentMatchers.any(MachineDto.class))).thenThrow(RuntimeException.class);
+		when(registerServiceMock.register(ArgumentMatchers.any(MachineDto.class))).thenThrow(RuntimeException.class);
 
-		MachineDto requestBody = getMachineDto();
+		MachineDto requestBody = DefaultModel.getMachineDto();
 		MockHttpServletRequestBuilder httpServletRequest = post("/v1/client/win/register")
 				.content(mapper.writeValueAsString(requestBody)).contentType(MediaType.APPLICATION_JSON);
 
@@ -71,9 +72,9 @@ public class RegisterControllerTest {
 
 	@Test
 	public void postRegisterWithRequiredValidFieldPattern() throws Exception {
-		when(registerService.register(ArgumentMatchers.any(MachineDto.class))).thenReturn(100);
+		when(registerServiceMock.register(ArgumentMatchers.any(MachineDto.class))).thenReturn(100);
 
-		MachineDto requestBody = getMachineDto();
+		MachineDto requestBody = DefaultModel.getMachineDto();
 		requestBody.getNetworkInfoDto().setIp("localhost");
 
 		MockHttpServletRequestBuilder httpServletRequest = post("/v1/client/win/register")
@@ -88,9 +89,9 @@ public class RegisterControllerTest {
 
 	@Test
 	public void postRegisterWithRequiredFieldEmpty() throws Exception {
-		when(registerService.register(ArgumentMatchers.any(MachineDto.class))).thenReturn(100);
+		when(registerServiceMock.register(ArgumentMatchers.any(MachineDto.class))).thenReturn(100);
 
-		MachineDto requestBody = getMachineDto();
+		MachineDto requestBody = DefaultModel.getMachineDto();
 		requestBody.setDotNetVersion(null);
 
 		MockHttpServletRequestBuilder httpServletRequest = post("/v1/client/win/register")
@@ -104,12 +105,12 @@ public class RegisterControllerTest {
 
 	@Test
 	public void putHeartbeatWithSuccess() throws Exception {
-		doNothing().when(registerService).heartbeat(ArgumentMatchers.any(Integer.class),
+		doNothing().when(registerServiceMock).heartbeat(ArgumentMatchers.any(Integer.class),
 				ArgumentMatchers.any(NetworkInfoDto.class));
 
 		int id = 100;
-		NetworkInfoDto requestBody = getMachineDto().getNetworkInfoDto();
-		registerService.heartbeat(id, requestBody);// simulated call mock
+		NetworkInfoDto requestBody = DefaultModel.getMachineDto().getNetworkInfoDto();
+		registerServiceMock.heartbeat(id, requestBody);// simulated call mock
 
 		MockHttpServletRequestBuilder httpServletRequest = put("/v1/client/win/heartbeat/" + id)
 				.content(mapper.writeValueAsString(requestBody)).contentType(MediaType.APPLICATION_JSON);
@@ -121,12 +122,12 @@ public class RegisterControllerTest {
 
 	@Test
 	public void putHeartbeatNotFoundMachine() throws Exception {
-		doNothing().doThrow(new NotFoundMachineException()).when(registerService)
+		doNothing().doThrow(new NotFoundMachineException()).when(registerServiceMock)
 				.heartbeat(ArgumentMatchers.any(Integer.class), ArgumentMatchers.any(NetworkInfoDto.class));
 
 		int id = 10;
-		NetworkInfoDto requestBody = getMachineDto().getNetworkInfoDto();
-		registerService.heartbeat(id, requestBody);
+		NetworkInfoDto requestBody = DefaultModel.getMachineDto().getNetworkInfoDto();
+		registerServiceMock.heartbeat(id, requestBody);
 
 		MockHttpServletRequestBuilder httpServletRequest = put("/v1/client/win/heartbeat/" + id)
 				.content(mapper.writeValueAsString(requestBody)).contentType(MediaType.APPLICATION_JSON);
@@ -138,12 +139,12 @@ public class RegisterControllerTest {
 
 	@Test
 	public void putHeartbeatWithRequiredFieldEmpty() throws Exception {
-		doNothing().when(registerService).heartbeat(ArgumentMatchers.any(Integer.class),
+		doNothing().when(registerServiceMock).heartbeat(ArgumentMatchers.any(Integer.class),
 				ArgumentMatchers.any(NetworkInfoDto.class));
 
 		int id = 100;
-		NetworkInfoDto requestBody = getMachineDto().getNetworkInfoDto();
-		registerService.heartbeat(id, requestBody);
+		NetworkInfoDto requestBody = DefaultModel.getMachineDto().getNetworkInfoDto();
+		registerServiceMock.heartbeat(id, requestBody);
 
 		requestBody.setHostname(null);// set null on body resquest
 
@@ -154,25 +155,5 @@ public class RegisterControllerTest {
 		mockMvc.perform(httpServletRequest).andDo(print()).andExpect(status().is(HttpStatus.BAD_REQUEST.value()))
 				.andExpect(jsonPath("$.fieldErrors[0].field").value("hostname"))
 				.andExpect(jsonPath("$.fieldErrors[0].message").value(responseMessage));
-	}
-
-	private MachineDto getMachineDto() {
-		MachineDto dto = new MachineDto();
-		dto.getNetworkInfoDto().setHostname("PHIL");
-		dto.getNetworkInfoDto().setIp("192.168.0.200");
-		dto.getNetworkInfoDto().setPort(12345);
-
-		dto.setAntivirus(true);
-		dto.setFirewall(false);
-		dto.setWindowsVersion("Windows X");
-		dto.setDotNetVersion("4.0.30319.42000");
-
-		DriveDto drive = new DriveDto();
-		drive.setName("X:\\");
-		drive.setAvailableSpace(4770430976L);
-		drive.setTotalSpace(25958948864L);
-		dto.getDrives().add(drive);
-
-		return dto;
 	}
 }

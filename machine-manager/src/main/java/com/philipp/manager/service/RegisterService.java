@@ -41,7 +41,7 @@ public class RegisterService {
 	public void heartbeat(int id, NetworkInfoDto loginForm) throws NotFoundMachineException {
 		Optional<Machine> optionalMachine = machineService.findById(id);
 		if (optionalMachine.isEmpty()) {
-			throw new NotFoundMachineException("Invalid id, the host need to register again.");
+			throw new NotFoundMachineException("Invalid id, the host need to register.");
 		}
 
 		optionalMachine = machineService.findByHostnameAndIpAndPort(loginForm.getHostname(), loginForm.getIp(),
