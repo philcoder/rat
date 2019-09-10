@@ -3,6 +3,10 @@ package com.philipp.manager.exception;
 public class NotFoundMachineException extends Exception {
 	private static final long serialVersionUID = 2770462144389894479L;
 
+	public NotFoundMachineException() {
+		this("Not found machine");
+	}
+
 	public NotFoundMachineException(String message, Throwable cause, boolean enableSuppression,
 			boolean writableStackTrace) {
 		super(message, cause, enableSuppression, writableStackTrace);

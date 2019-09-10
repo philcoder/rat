@@ -289,6 +289,41 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "terminal execute pwsh lang (outside)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"commands\" : \"cd c:\\\\ && dir\"\n}"
+						},
+						"url": {
+							"raw": "http://192.168.42.22:25000/watcher/v1/terminal",
+							"protocol": "http",
+							"host": [
+								"192",
+								"168",
+								"42",
+								"22"
+							],
+							"port": "25000",
+							"path": [
+								"watcher",
+								"v1",
+								"terminal"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		}

@@ -12,7 +12,7 @@ public class NetworkInfoDto {
 	@Size(max = 40, message = "Hostname must be a maximum of 40 characters")
 	private String hostname;
 
-	@Pattern(regexp = "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$")
+	@Pattern(regexp = "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$", message = "IP must be 0.0.0.0 at 255.255.255.255 range")
 	@Size(min = 7, max = 15)
 	@NotEmpty
 	private String ip;

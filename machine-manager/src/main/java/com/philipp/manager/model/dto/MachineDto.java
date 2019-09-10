@@ -15,7 +15,7 @@ public class MachineDto {
 
 	@Valid
 	@JsonUnwrapped
-	private NetworkInfoDto networkInfoDto;
+	private NetworkInfoDto networkInfoDto = new NetworkInfoDto();
 
 	@NotEmpty
 	@Size(max = 40, message = "Windows version must be a maximum of 40 characters")
