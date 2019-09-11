@@ -6,9 +6,9 @@ This guide will provide you all the steps to run Remote Administration Tool (RAT
 
 ### System Requeriments:
 
-1. Windows 10 64bits for RAT client
-2. Components docker and docker-compose already installed on server machine
-3. HDD 2 GB available on server for build docker images
+1. Windows 10 64bits for execute RAT clients and environment development for Spring Boot and .NET Framework
+2. Components docker and docker-compose already installed on server or deploy machine web project
+3. HDD +2 GB available on server or deploy for build docker images
 
 ### Technologies used:
 
