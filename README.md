@@ -62,8 +62,8 @@ machine.watcher.listen.port=20000
 ```
 **PS: The user need to know the web server address (manager.address) and the port (manager.port) after machine-manager is deployed and online.**
 
-For install and running process on client machine, execute as administrator level the install.bat, some infos will appear but nothing to do and terminal window will be close alone.
+For install and running process on client machine, execute as administrator level the **install.bat**, some infos will appear but nothing to do and terminal window will be close alone.
 
-For uninstall RAT client, go to inside 'Client Win' folder and run as administrator level, the uninstall.bat, some info will appear but nothing to do and terminal window will be close alone.
+For uninstall RAT client, go to inside **'Client Win'** folder and run as administrator level, the **uninstall.bat**, some info will appear but nothing to do and terminal window will be close alone.
 
 **PS: This client was tested only on Windows 10 64 bits and the executable was compiled only to 64 bits version.**
