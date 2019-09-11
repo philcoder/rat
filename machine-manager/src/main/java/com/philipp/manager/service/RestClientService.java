@@ -52,7 +52,11 @@ public class RestClientService {
 			}
 		} catch (Exception e) {
 			logger.warn("Execution " + e.getMessage());
-			throw new ExecuteRemoteCommandException("Machine " + machine + " failed to connect", e);
+			if (e instanceof ExecuteRemoteCommandException) {
+				throw e;
+			} else {
+				throw new ExecuteRemoteCommandException("Machine " + machine + " failed to connect", e);
+			}
 		}
 	}
 

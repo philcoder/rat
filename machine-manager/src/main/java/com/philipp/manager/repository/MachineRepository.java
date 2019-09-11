@@ -20,7 +20,8 @@ public interface MachineRepository extends CrudRepository<Machine, Integer> {
 	List<Machine> findOfflineMachines();
 
 	/**
-	 * Find online Machines with 30s or less, last seen update.
+	 * Find online Machines, they have with 30s or less seconds last seen update and
+	 * didn't goes to offline from.
 	 * 
 	 * @return
 	 */

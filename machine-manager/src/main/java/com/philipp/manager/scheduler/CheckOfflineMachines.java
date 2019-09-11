@@ -11,9 +11,9 @@ import org.springframework.stereotype.Component;
 import com.philipp.manager.service.MachineService;
 
 @Component
-public class RemoveOfflineMachines implements Job {
+public class CheckOfflineMachines implements Job {
 
-	private final Logger logger = LoggerFactory.getLogger(RemoveOfflineMachines.class);
+	private final Logger logger = LoggerFactory.getLogger(CheckOfflineMachines.class);
 
 	@Autowired
 	private MachineService machineService;

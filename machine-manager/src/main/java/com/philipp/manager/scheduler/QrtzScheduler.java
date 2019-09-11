@@ -38,7 +38,7 @@ public class QrtzScheduler {
 
 	@Bean
 	public JobDetailFactoryBean removeOldEntriesJob() {
-		return createJobDetail(RemoveOfflineMachines.class, "Remove Old Entries Job");
+		return createJobDetail(CheckOfflineMachines.class, "Remove Old Entries Job");
 	}
 
 	@Bean

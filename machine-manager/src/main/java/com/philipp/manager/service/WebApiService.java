@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.philipp.manager.exception.ExecuteRemoteCommandException;
+import com.philipp.manager.exception.NotFoundLogHistoryException;
+import com.philipp.manager.exception.NotFoundMachineException;
 import com.philipp.manager.model.Drive;
 import com.philipp.manager.model.LogHistory;
 import com.philipp.manager.model.Machine;
@@ -48,7 +50,7 @@ public class WebApiService {
 			if (machine.isPresent()) {
 				if (machine.get().isOnline()) {
 					try {
-						logHistory = restClientService.executeRemoteCommand(inputDto.getCommand(), machine.get());
+						logHistory = restClientService.executeRemoteCommand(inputDto.getCommands(), machine.get());
 						logHistoryService.save(logHistory);
 						machineLogHistory.getLogs().add(modelMapper.map(logHistory, LogHistoryDto.class));
 					} catch (ExecuteRemoteCommandException e) {
@@ -63,7 +65,7 @@ public class WebApiService {
 
 			if (logHistory == null) {
 				logHistory = new LogHistory();
-				logHistory.setCommands(inputDto.getCommand());
+				logHistory.setCommands(inputDto.getCommands());
 				machineLogHistory.getLogs().add(modelMapper.map(logHistory, LogHistoryDto.class));
 			}
 
@@ -78,7 +80,7 @@ public class WebApiService {
 		return convertMachineListToListDto(machineService.findAll());
 	}
 
-	public MachineLogHistoryDto historyShowMachineLogs(int id) {
+	public MachineLogHistoryDto historyShowMachineLogs(int id) throws NotFoundMachineException {
 		List<LogHistory> logs = logHistoryService.findAllByMachine(new Machine(id));
 		List<LogHistoryDto> logDtos = convertLogHistoryListToListDto(logs);
 
@@ -90,18 +92,22 @@ public class WebApiService {
 			Optional<Machine> machine = machineService.findById(id);
 			if (!machine.isEmpty()) {
 				machineLogHistory.setNetInfo(convertMachineToNetworkInfoDto(machine.get()));
+			} else {
+				throw new NotFoundMachineException("Not found machine for id: " + id);
 			}
 		}
 
 		return machineLogHistory;
 	}
 
-	public LogHistoryDto historyShowMachineLogOutput(int id) {
+	public LogHistoryDto historyShowMachineLogOutput(int id) throws NotFoundLogHistoryException {
 		LogHistoryDto output = new LogHistoryDto();
 		Optional<LogHistory> findLog = logHistoryService.findById(id);
 		if (findLog.isPresent()) {
 			output.setCommands(findLog.get().getCommands());
 			output.setOutputs(findLog.get().getOutputs());
+		} else {
+			throw new NotFoundLogHistoryException("Not found log history for id: " + id);
 		}
 
 		return output;

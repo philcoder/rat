@@ -2,6 +2,7 @@ package com.philipp.manager.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
@@ -78,6 +79,7 @@ public class RegisterServiceTest {
 		try {
 			MachineDto machineDto = DefaultModel.getMachineDto();
 			registerService.heartbeat(machineDto.getId(), machineDto.getNetworkInfoDto());
+			fail();
 		} catch (NotFoundMachineException e) {
 			assertThat(e.getMessage()).isEqualTo("Invalid id, the host need to register.");
 		}
@@ -92,6 +94,7 @@ public class RegisterServiceTest {
 		try {
 			MachineDto machineDto = DefaultModel.getMachineDto();
 			registerService.heartbeat(machineDto.getId(), machineDto.getNetworkInfoDto());
+			fail();
 		} catch (NotFoundMachineException e) {
 			assertThat(e.getMessage()).isEqualTo("Some attributes changes on host and need to register again.");
 		}
