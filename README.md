@@ -12,14 +12,15 @@ This guide will provide you all the steps to run Remote Administration Tool (RAT
 
 ### Technologies used:
 
-1. Web side: Spring Boot v2.1.7 components (web, data-jpa, quartz, thymeleaf) and Java SDK 12
+1. Web side: Spring Boot v2.1.7 components (web, data-jpa, quartz, thymeleaf, junit) and Java SDK 12 64bits
 2. Database: MySQL v8.0.13
-3. RAT client: Batch script, .NET Framework v4.7.2 and SelfHost LIbrary
-4. IDEs: Visual Studio Community 2019 (VS2019), Spring Tool Suite (STS) and Postman
-5. OS: Windows 10 64 bits for client and develop env. and Docker image using Ubuntu 18.04 LTS and others dependencies for build and deploy web project.
+3. RAT client: Batch script, .NET Framework v4.7.2 and SelfHost Library
+4. IDEs: Visual Studio Community 2019 (VS2019), Spring Tool Suite (STS) and Postman (REST Troubleshooting)
+5. OS: Windows 10 64 bits for deploy in clients and develop env. 
+6. Docker image using Ubuntu 18.04 LTS and others dependencies for build and deploy web project.
 
 
-### How to Execute projects like Development
+### How to Execute projects for Developer
 
 Web side: Open STS and import project maven select folder (machine-manager) inside **'rat'** directory
 
@@ -46,6 +47,8 @@ docker-compose -f docker-compose-deploy.yml down --volumes
 ```
 
 Access web service: http://localhost:15000/manager/web/home
+
+**PS: Logs from maven build and spring boot startup, enter inside 'app-web-api' docker instance and execute: tail -f /var/log/watchdog.log**
 
 ### How to Deploy RAT client (MachineWatcher) for monitoring Windows Machine
 
