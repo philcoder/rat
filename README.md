@@ -16,7 +16,7 @@ This guide will provide you all the steps to run Remote Administration Tool (RAT
 2. Database: MySQL v8.0.13
 3. RAT client: Batch script, .NET Framework v4.7.2 and SelfHost LIbrary
 4. IDEs: Visual Studio Community 2019 (VS2019), Spring Tool Suite (STS) and Postman
-5. OS: Windows 10 64 bits for client and develop env. and Docker image using Ubuntu 18.04 LTS and anothers dependecies for build and deploy web project.
+5. OS: Windows 10 64 bits for client and develop env. and Docker image using Ubuntu 18.04 LTS and others dependencies for build and deploy web project.
 
 
 ### How to Execute projects like Development
