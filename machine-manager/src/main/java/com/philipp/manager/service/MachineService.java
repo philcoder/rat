@@ -24,7 +24,7 @@ public class MachineService extends AbstractService<Machine, MachineRepository> 
 	public Machine findByHostnameAndIpAndPort(String hostname, String ip, int port) throws NotFoundMachineException {
 		Optional<Machine> optional = repository.findByHostnameAndIpAndPort(hostname, ip, port);
 		if (optional.isEmpty()) {
-			throw new NotFoundMachineException("Some attributes changes on host and need to register again.");
+			throw new NotFoundMachineException("Not found machine: " + "[" + hostname + "] " + ip + ":" + port);
 		}
 		return optional.get();
 	}
