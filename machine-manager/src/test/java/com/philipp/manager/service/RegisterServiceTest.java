@@ -5,8 +5,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.when;
 
-import java.util.Optional;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
@@ -34,7 +32,8 @@ public class RegisterServiceTest {
 	@Test
 	public void registerWithSuccess() throws Exception {
 		when(machineServiceMock.findByHostnameAndIpAndPort(ArgumentMatchers.any(String.class),
-				ArgumentMatchers.any(String.class), ArgumentMatchers.any(Integer.class))).thenReturn(Optional.empty());
+				ArgumentMatchers.any(String.class), ArgumentMatchers.any(Integer.class)))
+						.thenThrow(NotFoundMachineException.class);
 
 		Machine saved = DefaultModel.convertToEntity(DefaultModel.getMachineDto());
 		when(machineServiceMock.save(ArgumentMatchers.any(Machine.class))).thenReturn(saved);
@@ -49,8 +48,7 @@ public class RegisterServiceTest {
 		Machine findMachine = DefaultModel.convertToEntity(DefaultModel.getMachineDto());
 		findMachine.setId(123);// find id
 		when(machineServiceMock.findByHostnameAndIpAndPort(ArgumentMatchers.any(String.class),
-				ArgumentMatchers.any(String.class), ArgumentMatchers.any(Integer.class)))
-						.thenReturn(Optional.of(findMachine));
+				ArgumentMatchers.any(String.class), ArgumentMatchers.any(Integer.class))).thenReturn(findMachine);
 
 		when(machineServiceMock.save(ArgumentMatchers.any(Machine.class))).thenReturn(findMachine);
 
@@ -63,40 +61,35 @@ public class RegisterServiceTest {
 	public void heartbeatWithSuccess() throws Exception {
 		Machine findMachine = DefaultModel.convertToEntity(DefaultModel.getMachineDto());
 
-		when(machineServiceMock.findById(ArgumentMatchers.any(Integer.class))).thenReturn(Optional.of(findMachine));
+		when(machineServiceMock.findById(ArgumentMatchers.any(Integer.class))).thenReturn(findMachine);
 		when(machineServiceMock.findByHostnameAndIpAndPort(ArgumentMatchers.any(String.class),
-				ArgumentMatchers.any(String.class), ArgumentMatchers.any(Integer.class)))
-						.thenReturn(Optional.of(findMachine));
+				ArgumentMatchers.any(String.class), ArgumentMatchers.any(Integer.class))).thenReturn(findMachine);
 
 		MachineDto machineDto = DefaultModel.getMachineDto();
 		registerService.heartbeat(findMachine.getId(), machineDto.getNetworkInfoDto());
 		assertTrue(true);// non exception executed
 	}
 
-	@Test
+	@Test(expected = NotFoundMachineException.class)
 	public void putHeartbeatNotFoundMachineById() throws Exception {
-		when(machineServiceMock.findById(ArgumentMatchers.any(Integer.class))).thenReturn(Optional.empty());
-		try {
-			MachineDto machineDto = DefaultModel.getMachineDto();
-			registerService.heartbeat(machineDto.getId(), machineDto.getNetworkInfoDto());
-			fail();
-		} catch (NotFoundMachineException e) {
-			assertThat(e.getMessage()).isEqualTo("Invalid id, the host need to register.");
-		}
+		when(machineServiceMock.findById(ArgumentMatchers.any(Integer.class)))
+				.thenThrow(NotFoundMachineException.class);
+
+		MachineDto machineDto = DefaultModel.getMachineDto();
+		registerService.heartbeat(machineDto.getId(), machineDto.getNetworkInfoDto());
+		fail();
 	}
 
-	@Test
+	@Test(expected = NotFoundMachineException.class)
 	public void putHeartbeatNotFoundMachineNetworkAttributes() throws Exception {
 		Machine findMachine = DefaultModel.convertToEntity(DefaultModel.getMachineDto());
-		when(machineServiceMock.findById(ArgumentMatchers.any(Integer.class))).thenReturn(Optional.of(findMachine));
+		when(machineServiceMock.findById(ArgumentMatchers.any(Integer.class))).thenReturn(findMachine);
 		when(machineServiceMock.findByHostnameAndIpAndPort(ArgumentMatchers.any(String.class),
-				ArgumentMatchers.any(String.class), ArgumentMatchers.any(Integer.class))).thenReturn(Optional.empty());
-		try {
-			MachineDto machineDto = DefaultModel.getMachineDto();
-			registerService.heartbeat(machineDto.getId(), machineDto.getNetworkInfoDto());
-			fail();
-		} catch (NotFoundMachineException e) {
-			assertThat(e.getMessage()).isEqualTo("Some attributes changes on host and need to register again.");
-		}
+				ArgumentMatchers.any(String.class), ArgumentMatchers.any(Integer.class)))
+						.thenThrow(NotFoundMachineException.class);
+
+		MachineDto machineDto = DefaultModel.getMachineDto();
+		registerService.heartbeat(machineDto.getId(), machineDto.getNetworkInfoDto());
+		fail();
 	}
 }

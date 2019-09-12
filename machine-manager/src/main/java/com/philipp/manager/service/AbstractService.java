@@ -2,7 +2,6 @@ package com.philipp.manager.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.CrudRepository;
@@ -16,9 +15,7 @@ abstract class AbstractService<ENTITY, REPO extends CrudRepository<ENTITY, Integ
 		return repository.save(entity);
 	}
 
-	public Optional<ENTITY> findById(Integer id) {
-		return repository.findById(id);
-	}
+	protected abstract ENTITY findById(Integer id) throws Exception;
 
 	public boolean existsById(Integer id) {
 		return repository.existsById(id);

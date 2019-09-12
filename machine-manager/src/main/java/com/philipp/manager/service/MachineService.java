@@ -5,14 +5,28 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.philipp.manager.exception.NotFoundMachineException;
 import com.philipp.manager.model.Machine;
 import com.philipp.manager.repository.MachineRepository;
 
 @Service
 public class MachineService extends AbstractService<Machine, MachineRepository> {
 
-	public Optional<Machine> findByHostnameAndIpAndPort(String hostname, String ip, int port) {
-		return repository.findByHostnameAndIpAndPort(hostname, ip, port);
+	@Override
+	public Machine findById(Integer id) throws NotFoundMachineException {
+		Optional<Machine> optional = repository.findById(id);
+		if (optional.isEmpty()) {
+			throw new NotFoundMachineException("Not found machine for id: " + id);
+		}
+		return optional.get();
+	}
+
+	public Machine findByHostnameAndIpAndPort(String hostname, String ip, int port) throws NotFoundMachineException {
+		Optional<Machine> optional = repository.findByHostnameAndIpAndPort(hostname, ip, port);
+		if (optional.isEmpty()) {
+			throw new NotFoundMachineException("Some attributes changes on host and need to register again.");
+		}
+		return optional.get();
 	}
 
 	public List<Machine> findOfflineMachines() {

@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import com.philipp.manager.exception.NotFoundMachineException;
 import com.philipp.manager.model.Machine;
 import com.philipp.manager.repository.MachineRepository;
 import com.philipp.manager.util.DefaultModel;
@@ -41,15 +42,13 @@ public class MachineServiceTest {
 		when(repositoryMock.findByHostnameAndIpAndPort(hostname, ip, port))
 				.thenReturn(Optional.of(DefaultModel.getMachine()));
 
-		Optional<Machine> findMachine = service.findByHostnameAndIpAndPort(hostname, ip, port);
-		if (findMachine.isPresent()) {
-			assertThat(findMachine.get().getHostname()).isEqualTo(hostname);
-			assertThat(findMachine.get().getIp()).isEqualTo(ip);
-			assertThat(findMachine.get().getPort()).isEqualTo(port);
-		}
+		Machine findMachine = service.findByHostnameAndIpAndPort(hostname, ip, port);
+		assertThat(findMachine.getHostname()).isEqualTo(hostname);
+		assertThat(findMachine.getIp()).isEqualTo(ip);
+		assertThat(findMachine.getPort()).isEqualTo(port);
 	}
 
-	@Test
+	@Test(expected = NotFoundMachineException.class)
 	public void findByHostnameAndIpAndPortNotFound() throws Exception {
 		Machine machine = DefaultModel.getMachine();
 		String hostname = machine.getHostname();
@@ -58,8 +57,7 @@ public class MachineServiceTest {
 
 		when(repositoryMock.findByHostnameAndIpAndPort(hostname, ip, port)).thenReturn(Optional.empty());
 
-		Optional<Machine> findMachine = service.findByHostnameAndIpAndPort(hostname, ip, port);
-		assertTrue(findMachine.isEmpty());
+		service.findByHostnameAndIpAndPort(hostname, ip, port);
 	}
 
 	@Test

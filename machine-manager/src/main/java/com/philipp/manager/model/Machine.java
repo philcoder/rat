@@ -72,6 +72,12 @@ public class Machine {
 		this.id = id;
 	}
 
+	public Machine(String hostname, String ip, int port) {
+		this.hostname = hostname;
+		this.ip = ip;
+		this.port = port;
+	}
+
 	public int getId() {
 		return id;
 	}

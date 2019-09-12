@@ -1,7 +1,6 @@
 package com.philipp.manager.service;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,33 +23,27 @@ public class RegisterService {
 
 	// save or update
 	public int register(MachineDto machineDto) {
-		Optional<Machine> optionalMachine = machineService.findByHostnameAndIpAndPort(
-				machineDto.getNetworkInfoDto().getHostname(), machineDto.getNetworkInfoDto().getIp(),
-				machineDto.getNetworkInfoDto().getPort());
+		Machine machineConverted = convertToEntity(machineDto);
+		try {
+			Machine machine = machineService.findByHostnameAndIpAndPort(machineDto.getNetworkInfoDto().getHostname(),
+					machineDto.getNetworkInfoDto().getIp(), machineDto.getNetworkInfoDto().getPort());
 
-		Machine machine = convertToEntity(machineDto);
-		if (!optionalMachine.isEmpty()) {
-			machine.setId(optionalMachine.get().getId());
-			machine.setLogHistories(optionalMachine.get().getLogHistories());
+			machineConverted.setId(machine.getId());
+			machineConverted.setLogHistories(machine.getLogHistories());
+		} catch (NotFoundMachineException e) {
+			// the 'machineConverted' is new data on database
 		}
-		Machine saved = machineService.save(machine); // for persist first time
+
+		Machine saved = machineService.save(machineConverted); // for persist first time
 		return saved.getId();
 	}
 
 	@Transactional
 	public void heartbeat(int id, NetworkInfoDto loginForm) throws NotFoundMachineException {
-		Optional<Machine> optionalMachine = machineService.findById(id);
-		if (optionalMachine.isEmpty()) {
-			throw new NotFoundMachineException("Invalid id, the host need to register.");
-		}
-
-		optionalMachine = machineService.findByHostnameAndIpAndPort(loginForm.getHostname(), loginForm.getIp(),
+		Machine machine = machineService.findById(id);
+		machine = machineService.findByHostnameAndIpAndPort(loginForm.getHostname(), loginForm.getIp(),
 				loginForm.getPort());
-		if (optionalMachine.isEmpty()) {
-			throw new NotFoundMachineException("Some attributes changes on host and need to register again.");
-		}
 
-		Machine machine = optionalMachine.get();
 		machine.setLastSeen(LocalDateTime.now());
 		machine.setOnline(true);
 		// machineService.save(machine); //Redundant save() Call for update operations

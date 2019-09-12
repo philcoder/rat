@@ -8,7 +8,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -95,24 +94,20 @@ public class WebApiServiceTest {
 	public void historyShowMachineLogOutputWithSuccess() throws Exception {
 		int id = 50;
 		LogHistory logHistory = DefaultModel.getLogHistory();
-		when(logHistoryService.findById(id)).thenReturn(Optional.of(logHistory));
+		when(logHistoryService.findById(id)).thenReturn(logHistory);
 
 		LogHistoryDto dto = serviceMock.historyShowMachineLogOutput(id);
 		assertThat(dto.getCommands()).isEqualTo(logHistory.getCommands());
 		assertThat(dto.getOutputs()).isEqualTo(logHistory.getOutputs());
 	}
 
-	@Test
+	@Test(expected = NotFoundLogHistoryException.class)
 	public void historyShowMachineLogOutputNotFoundId() throws Exception {
 		int id = 60;
-		when(logHistoryService.findById(id)).thenReturn(Optional.empty());
+		when(logHistoryService.findById(id)).thenThrow(NotFoundLogHistoryException.class);
 
-		try {
-			serviceMock.historyShowMachineLogOutput(id);
-			fail();
-		} catch (NotFoundLogHistoryException e) {
-			assertThat(e.getMessage()).isEqualTo("Not found log history for id: " + id);
-		}
+		serviceMock.historyShowMachineLogOutput(id);
+		fail();
 	}
 
 	@Test
@@ -138,30 +133,26 @@ public class WebApiServiceTest {
 		int id = 300;
 		Machine machine = DefaultModel.getMachine();
 		when(logHistoryService.findAllByMachine(ArgumentMatchers.any(Machine.class))).thenReturn(new ArrayList<>());
-		when(machineService.findById(ArgumentMatchers.any(Integer.class))).thenReturn(Optional.of(machine));
+		when(machineService.findById(ArgumentMatchers.any(Integer.class))).thenReturn(machine);
 
 		MachineLogHistoryDto dto = serviceMock.historyShowMachineLogs(id);
 		assertTrue(dto.getLogs().isEmpty());
 	}
 
-	@Test
+	@Test(expected = NotFoundMachineException.class)
 	public void historyShowMachineLogsNotFoundIdMachine() throws Exception {
 		int id = 350;
 		when(logHistoryService.findAllByMachine(ArgumentMatchers.any(Machine.class))).thenReturn(new ArrayList<>());
-		when(machineService.findById(ArgumentMatchers.any(Integer.class))).thenReturn(Optional.empty());
+		when(machineService.findById(ArgumentMatchers.any(Integer.class))).thenThrow(NotFoundMachineException.class);
 
-		try {
-			serviceMock.historyShowMachineLogs(id);
-			fail();
-		} catch (NotFoundMachineException e) {
-			assertThat(e.getMessage()).isEqualTo("Not found machine for id: " + id);
-		}
+		serviceMock.historyShowMachineLogs(id);
+		fail();
 	}
 
 	@Test
 	public void executeCommandsWithSuccess() throws Exception {
 		Machine machine = DefaultModel.getMachine();
-		when(machineService.findById(ArgumentMatchers.any(Integer.class))).thenReturn(Optional.of(machine));
+		when(machineService.findById(ArgumentMatchers.any(Integer.class))).thenReturn(machine);
 		LogHistory logHistoryFromRemoteCommand = DefaultModel.getLogHistory();
 		when(restClientService.executeRemoteCommand(ArgumentMatchers.any(String.class),
 				ArgumentMatchers.any(Machine.class))).thenReturn(logHistoryFromRemoteCommand);
@@ -177,11 +168,26 @@ public class WebApiServiceTest {
 		assertTrue(machineLogHistoryDtos.get(1).getLogs().size() == 1);
 	}
 
+	public void executeCommandsWithMachineInvalidId() throws Exception {
+		Machine machine = DefaultModel.getMachine();
+		machine.setOnline(false);
+		when(machineService.findById(ArgumentMatchers.any(Integer.class))).thenThrow(NotFoundMachineException.class);
+
+		InputDto dto = DefaultModel.getInputDto();
+		List<MachineLogHistoryDto> machineLogHistoryDtos = serviceMock.executeCommands(dto);
+		assertFalse(machineLogHistoryDtos.isEmpty());
+		assertTrue(machineLogHistoryDtos.size() == 2);
+		assertFalse(machineLogHistoryDtos.get(0).getLogs().isEmpty());
+		assertThat(machineLogHistoryDtos.get(0).getMessage()).contains("Not found machine for id");
+		assertTrue(machineLogHistoryDtos.get(1).getLogs().size() == 1);
+		assertTrue(machineLogHistoryDtos.get(1).getLogs().get(0).getOutputs().isEmpty());
+	}
+
 	@Test
 	public void executeCommandsWithMachineOffline() throws Exception {
 		Machine machine = DefaultModel.getMachine();
 		machine.setOnline(false);
-		when(machineService.findById(ArgumentMatchers.any(Integer.class))).thenReturn(Optional.of(machine));
+		when(machineService.findById(ArgumentMatchers.any(Integer.class))).thenReturn(machine);
 
 		InputDto dto = DefaultModel.getInputDto();
 
@@ -197,15 +203,11 @@ public class WebApiServiceTest {
 	@Test
 	public void executeCommandsWithExcuteRemoteException() throws Exception {
 		Machine machine = DefaultModel.getMachine();
-		when(machineService.findById(ArgumentMatchers.any(Integer.class))).thenReturn(Optional.of(machine));
-		LogHistory logHistoryFromRemoteCommand = DefaultModel.getLogHistory();
+		when(machineService.findById(ArgumentMatchers.any(Integer.class))).thenReturn(machine);
 		when(restClientService.executeRemoteCommand(ArgumentMatchers.any(String.class),
 				ArgumentMatchers.any(Machine.class))).thenThrow(new ExecuteRemoteCommandException());
 
-		InputDto dto = DefaultModel.getInputDto();
-		dto.setCommands(logHistoryFromRemoteCommand.getCommands());
-
-		List<MachineLogHistoryDto> machineLogHistoryDtos = serviceMock.executeCommands(dto);
+		List<MachineLogHistoryDto> machineLogHistoryDtos = serviceMock.executeCommands(DefaultModel.getInputDto());
 		assertFalse(machineLogHistoryDtos.isEmpty());
 		assertTrue(machineLogHistoryDtos.size() == 2);
 		assertFalse(machineLogHistoryDtos.get(0).getLogs().isEmpty());

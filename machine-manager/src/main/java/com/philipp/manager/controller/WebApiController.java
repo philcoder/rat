@@ -36,8 +36,8 @@ public class WebApiController {
 	}
 
 	@PostMapping("/execute/online/machines/commands")
-	public List<MachineLogHistoryDto> executeCommands(@Valid @RequestBody InputDto inputDto) {
-		return webApiService.executeCommands(inputDto);
+	public ResponseEntity<?> executeCommands(@Valid @RequestBody InputDto inputDto) {
+		return new ResponseEntity<List<MachineLogHistoryDto>>(webApiService.executeCommands(inputDto), HttpStatus.OK);
 	}
 
 	@GetMapping("/history/show/all/machines")
