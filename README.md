@@ -38,12 +38,12 @@ docker-compose -f docker-compose.yml up -d --build
 
 For stop all services
 ```
-docker-compose -f docker-compose-deploy.yml down
+docker-compose -f docker-compose.yml down
 ```
 
 For stop and cleanup volumes 
 ```
-docker-compose -f docker-compose-deploy.yml down --volumes
+docker-compose -f docker-compose.yml down --volumes
 ```
 
 Access web service: http://localhost:15000/manager/web/home
