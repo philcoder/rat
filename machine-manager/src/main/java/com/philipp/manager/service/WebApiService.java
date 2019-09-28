@@ -23,10 +23,10 @@ import com.philipp.manager.model.dto.NetworkInfoDto;
 @Service
 public class WebApiService {
 	@Autowired
-	private LogHistoryService logHistoryService;
+	private LogHistoryRepositoryService logHistoryService;
 
 	@Autowired
-	private MachineService machineService;
+	private MachineRepositoryService machineService;
 
 	@Autowired
 	private RestClientService restClientService;

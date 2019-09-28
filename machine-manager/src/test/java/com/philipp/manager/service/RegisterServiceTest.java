@@ -27,7 +27,7 @@ public class RegisterServiceTest {
 	private RegisterService registerService;
 
 	@MockBean
-	private MachineService machineServiceMock;
+	private MachineRepositoryService machineServiceMock;
 
 	@Test
 	public void registerWithSuccess() throws Exception {

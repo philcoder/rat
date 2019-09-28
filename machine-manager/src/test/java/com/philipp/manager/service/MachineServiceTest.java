@@ -23,11 +23,11 @@ import com.philipp.manager.util.DefaultModel;
 import com.philipp.manager.util.RandomSpringJUnit4ClassRunner;
 
 @RunWith(RandomSpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = { MachineService.class })
+@SpringBootTest(classes = { MachineRepositoryService.class })
 public class MachineServiceTest {
 
 	@Autowired
-	private MachineService service;
+	private MachineRepositoryService service;
 
 	@MockBean
 	private MachineRepository repositoryMock;

@@ -37,10 +37,10 @@ public class WebApiServiceTest {
 	private WebApiService serviceMock;
 
 	@MockBean
-	private LogHistoryService logHistoryService;
+	private LogHistoryRepositoryService logHistoryService;
 
 	@MockBean
-	private MachineService machineService;
+	private MachineRepositoryService machineService;
 
 	@MockBean
 	private RestClientService restClientService;

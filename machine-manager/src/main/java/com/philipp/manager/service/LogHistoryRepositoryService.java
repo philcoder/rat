@@ -11,7 +11,7 @@ import com.philipp.manager.model.Machine;
 import com.philipp.manager.repository.LogHistoryRepository;
 
 @Service
-public class LogHistoryService extends AbstractService<LogHistory, LogHistoryRepository> {
+public class LogHistoryRepositoryService extends AbstractRepositoryService<LogHistory, LogHistoryRepository> {
 	public List<LogHistory> findAllByMachine(Machine machine) {
 		return repository.findAllByMachine(machine);
 	}

@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.CrudRepository;
 
-abstract class AbstractService<ENTITY, REPO extends CrudRepository<ENTITY, Integer>> {
+abstract class AbstractRepositoryService<ENTITY, REPO extends CrudRepository<ENTITY, Integer>> {
 
 	@Autowired
 	protected REPO repository;

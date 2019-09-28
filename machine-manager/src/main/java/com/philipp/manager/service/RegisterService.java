@@ -16,7 +16,7 @@ import com.philipp.manager.model.dto.NetworkInfoDto;
 public class RegisterService {
 
 	@Autowired
-	private MachineService machineService;
+	private MachineRepositoryService machineService;
 
 	@Autowired
 	private ModelMapper modelMapper;

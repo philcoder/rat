@@ -10,7 +10,7 @@ import com.philipp.manager.model.Machine;
 import com.philipp.manager.repository.MachineRepository;
 
 @Service
-public class MachineService extends AbstractService<Machine, MachineRepository> {
+public class MachineRepositoryService extends AbstractRepositoryService<Machine, MachineRepository> {
 
 	@Override
 	public Machine findById(Integer id) throws NotFoundMachineException {
