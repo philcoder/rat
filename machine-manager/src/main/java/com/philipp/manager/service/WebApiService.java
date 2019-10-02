@@ -3,7 +3,6 @@ package com.philipp.manager.service;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,10 +23,10 @@ import com.philipp.manager.model.dto.NetworkInfoDto;
 @Service
 public class WebApiService {
 	@Autowired
-	private LogHistoryService logHistoryService;
+	private LogHistoryRepositoryService logHistoryService;
 
 	@Autowired
-	private MachineService machineService;
+	private MachineRepositoryService machineService;
 
 	@Autowired
 	private RestClientService restClientService;
@@ -45,35 +44,34 @@ public class WebApiService {
 		for (Integer id : inputDto.getMachineIdsList()) {
 			MachineLogHistoryDto machineLogHistory = new MachineLogHistoryDto();
 
+			Machine machine = null;
 			LogHistory logHistory = null;
-			Optional<Machine> machine = machineService.findById(id);
-			if (machine.isPresent()) {
-				if (machine.get().isOnline()) {
-					try {
-						logHistory = restClientService.executeRemoteCommand(inputDto.getCommands(), machine.get());
-						logHistoryService.save(logHistory);
-						machineLogHistory.getLogs().add(modelMapper.map(logHistory, LogHistoryDto.class));
-					} catch (ExecuteRemoteCommandException e) {
-						machineLogHistory.setMessage(e.getMessage());
-					}
+			try {
+				machine = machineService.findById(id);
+				if (machine.isOnline()) {
+					logHistory = restClientService.executeRemoteCommand(inputDto.getCommands(), machine);
+					logHistoryService.save(logHistory);
 				} else {
-					machineLogHistory.setMessage("Machine " + machine.get() + " is offline");
+					machineLogHistory.setMessage("Machine " + machine + " is offline");
 				}
-			} else {
-				machineLogHistory.setMessage("Machine with invalid id");
+			} catch (NotFoundMachineException e) {
+				machineLogHistory.setMessage(e.getMessage());
+				machine = new Machine("NONE", "0.0.0.0", 0);
+			} catch (ExecuteRemoteCommandException e) {
+				machineLogHistory.setMessage(e.getMessage());
 			}
 
 			if (logHistory == null) {
 				logHistory = new LogHistory();
 				logHistory.setCommands(inputDto.getCommands());
-				machineLogHistory.getLogs().add(modelMapper.map(logHistory, LogHistoryDto.class));
 			}
 
-			machineLogHistory.setNetInfo(convertMachineToNetworkInfoDto(machine.get()));
+			machineLogHistory.getLogs().add(modelMapper.map(logHistory, LogHistoryDto.class));
+			machineLogHistory.setNetInfo(convertMachineToNetworkInfoDto(machine));
 			response.add(machineLogHistory);
 		}
-
 		return response;
+
 	}
 
 	public List<MachineDto> historyShowAllMachines() {
@@ -89,12 +87,8 @@ public class WebApiService {
 			machineLogHistory.setLogs(logDtos);
 			machineLogHistory.setNetInfo(convertMachineToNetworkInfoDto(logs.get(0).getMachine()));
 		} else {
-			Optional<Machine> machine = machineService.findById(id);
-			if (!machine.isEmpty()) {
-				machineLogHistory.setNetInfo(convertMachineToNetworkInfoDto(machine.get()));
-			} else {
-				throw new NotFoundMachineException("Not found machine for id: " + id);
-			}
+			Machine machine = machineService.findById(id);
+			machineLogHistory.setNetInfo(convertMachineToNetworkInfoDto(machine));
 		}
 
 		return machineLogHistory;
@@ -102,14 +96,9 @@ public class WebApiService {
 
 	public LogHistoryDto historyShowMachineLogOutput(int id) throws NotFoundLogHistoryException {
 		LogHistoryDto output = new LogHistoryDto();
-		Optional<LogHistory> findLog = logHistoryService.findById(id);
-		if (findLog.isPresent()) {
-			output.setCommands(findLog.get().getCommands());
-			output.setOutputs(findLog.get().getOutputs());
-		} else {
-			throw new NotFoundLogHistoryException("Not found log history for id: " + id);
-		}
-
+		LogHistory findLog = logHistoryService.findById(id);
+		output.setCommands(findLog.getCommands());
+		output.setOutputs(findLog.getOutputs());
 		return output;
 	}
 

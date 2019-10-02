@@ -21,11 +21,11 @@ import com.philipp.manager.util.DefaultModel;
 import com.philipp.manager.util.RandomSpringJUnit4ClassRunner;
 
 @RunWith(RandomSpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = { LogHistoryService.class })
+@SpringBootTest(classes = { LogHistoryRepositoryService.class })
 public class LogHistoryServiceTest {
 
 	@Autowired
-	private LogHistoryService service;
+	private LogHistoryRepositoryService service;
 
 	@MockBean
 	private LogHistoryRepository repositoryMock;
